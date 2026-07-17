@@ -184,7 +184,11 @@ export const FORECAST: ForecastPoint[] = Array.from({ length: 73 }, (_, h) => {
 // LIVE BACKEND DATA BRIDGES (CONNECTS TO FASTAPI ON PORT 8000)
 // ============================================================================
 
+<<<<<<< HEAD
 const BASE_URL = ''
+=======
+const BASE_URL = 'http://127.0.0.1:8000'
+>>>>>>> 3953c59 (Resetting Commit)
 
 export async function fetchLiveWeatherData(city: string) {
   try {
