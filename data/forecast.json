@@ -1,0 +1,866 @@
+[
+    {
+        "hour_offset": 0,
+        "timestamp": "2026-07-14T00:00",
+        "predicted_aqi": 33,
+        "nodes": {
+            "center": 42,
+            "north": 27,
+            "south": 24,
+            "east": 42,
+            "west": 32
+        }
+    },
+    {
+        "hour_offset": 1,
+        "timestamp": "2026-07-14T01:00",
+        "predicted_aqi": 31,
+        "nodes": {
+            "center": 40,
+            "north": 28,
+            "south": 23,
+            "east": 38,
+            "west": 29
+        }
+    },
+    {
+        "hour_offset": 2,
+        "timestamp": "2026-07-14T02:00",
+        "predicted_aqi": 31,
+        "nodes": {
+            "center": 38,
+            "north": 28,
+            "south": 23,
+            "east": 39,
+            "west": 29
+        }
+    },
+    {
+        "hour_offset": 3,
+        "timestamp": "2026-07-14T03:00",
+        "predicted_aqi": 32,
+        "nodes": {
+            "center": 41,
+            "north": 28,
+            "south": 25,
+            "east": 41,
+            "west": 28
+        }
+    },
+    {
+        "hour_offset": 4,
+        "timestamp": "2026-07-14T04:00",
+        "predicted_aqi": 33,
+        "nodes": {
+            "center": 51,
+            "north": 26,
+            "south": 26,
+            "east": 41,
+            "west": 24
+        }
+    },
+    {
+        "hour_offset": 5,
+        "timestamp": "2026-07-14T05:00",
+        "predicted_aqi": 36,
+        "nodes": {
+            "center": 52,
+            "north": 24,
+            "south": 22,
+            "east": 55,
+            "west": 31
+        }
+    },
+    {
+        "hour_offset": 6,
+        "timestamp": "2026-07-14T06:00",
+        "predicted_aqi": 33,
+        "nodes": {
+            "center": 44,
+            "north": 30,
+            "south": 20,
+            "east": 38,
+            "west": 34
+        }
+    },
+    {
+        "hour_offset": 7,
+        "timestamp": "2026-07-14T07:00",
+        "predicted_aqi": 29,
+        "nodes": {
+            "center": 40,
+            "north": 25,
+            "south": 22,
+            "east": 34,
+            "west": 26
+        }
+    },
+    {
+        "hour_offset": 8,
+        "timestamp": "2026-07-14T08:00",
+        "predicted_aqi": 27,
+        "nodes": {
+            "center": 32,
+            "north": 25,
+            "south": 24,
+            "east": 31,
+            "west": 23
+        }
+    },
+    {
+        "hour_offset": 9,
+        "timestamp": "2026-07-14T09:00",
+        "predicted_aqi": 26,
+        "nodes": {
+            "center": 30,
+            "north": 22,
+            "south": 22,
+            "east": 32,
+            "west": 26
+        }
+    },
+    {
+        "hour_offset": 10,
+        "timestamp": "2026-07-14T10:00",
+        "predicted_aqi": 31,
+        "nodes": {
+            "center": 37,
+            "north": 25,
+            "south": 27,
+            "east": 38,
+            "west": 30
+        }
+    },
+    {
+        "hour_offset": 11,
+        "timestamp": "2026-07-14T11:00",
+        "predicted_aqi": 34,
+        "nodes": {
+            "center": 38,
+            "north": 30,
+            "south": 32,
+            "east": 37,
+            "west": 37
+        }
+    },
+    {
+        "hour_offset": 12,
+        "timestamp": "2026-07-14T12:00",
+        "predicted_aqi": 35,
+        "nodes": {
+            "center": 37,
+            "north": 35,
+            "south": 34,
+            "east": 37,
+            "west": 32
+        }
+    },
+    {
+        "hour_offset": 13,
+        "timestamp": "2026-07-14T13:00",
+        "predicted_aqi": 37,
+        "nodes": {
+            "center": 36,
+            "north": 36,
+            "south": 32,
+            "east": 47,
+            "west": 36
+        }
+    },
+    {
+        "hour_offset": 14,
+        "timestamp": "2026-07-14T14:00",
+        "predicted_aqi": 36,
+        "nodes": {
+            "center": 39,
+            "north": 37,
+            "south": 35,
+            "east": 37,
+            "west": 36
+        }
+    },
+    {
+        "hour_offset": 15,
+        "timestamp": "2026-07-14T15:00",
+        "predicted_aqi": 40,
+        "nodes": {
+            "center": 44,
+            "north": 36,
+            "south": 38,
+            "east": 45,
+            "west": 39
+        }
+    },
+    {
+        "hour_offset": 16,
+        "timestamp": "2026-07-14T16:00",
+        "predicted_aqi": 39,
+        "nodes": {
+            "center": 43,
+            "north": 35,
+            "south": 37,
+            "east": 47,
+            "west": 37
+        }
+    },
+    {
+        "hour_offset": 17,
+        "timestamp": "2026-07-14T17:00",
+        "predicted_aqi": 42,
+        "nodes": {
+            "center": 45,
+            "north": 40,
+            "south": 43,
+            "east": 45,
+            "west": 37
+        }
+    },
+    {
+        "hour_offset": 18,
+        "timestamp": "2026-07-14T18:00",
+        "predicted_aqi": 45,
+        "nodes": {
+            "center": 50,
+            "north": 47,
+            "south": 46,
+            "east": 45,
+            "west": 41
+        }
+    },
+    {
+        "hour_offset": 19,
+        "timestamp": "2026-07-14T19:00",
+        "predicted_aqi": 49,
+        "nodes": {
+            "center": 53,
+            "north": 48,
+            "south": 49,
+            "east": 51,
+            "west": 48
+        }
+    },
+    {
+        "hour_offset": 20,
+        "timestamp": "2026-07-14T20:00",
+        "predicted_aqi": 49,
+        "nodes": {
+            "center": 53,
+            "north": 48,
+            "south": 49,
+            "east": 50,
+            "west": 48
+        }
+    },
+    {
+        "hour_offset": 21,
+        "timestamp": "2026-07-14T21:00",
+        "predicted_aqi": 49,
+        "nodes": {
+            "center": 48,
+            "north": 53,
+            "south": 43,
+            "east": 53,
+            "west": 51
+        }
+    },
+    {
+        "hour_offset": 22,
+        "timestamp": "2026-07-14T22:00",
+        "predicted_aqi": 50,
+        "nodes": {
+            "center": 53,
+            "north": 53,
+            "south": 42,
+            "east": 54,
+            "west": 50
+        }
+    },
+    {
+        "hour_offset": 23,
+        "timestamp": "2026-07-14T23:00",
+        "predicted_aqi": 48,
+        "nodes": {
+            "center": 52,
+            "north": 44,
+            "south": 49,
+            "east": 51,
+            "west": 48
+        }
+    },
+    {
+        "hour_offset": 24,
+        "timestamp": "2026-07-15T00:00",
+        "predicted_aqi": 51,
+        "nodes": {
+            "center": 58,
+            "north": 40,
+            "south": 61,
+            "east": 53,
+            "west": 43
+        }
+    },
+    {
+        "hour_offset": 25,
+        "timestamp": "2026-07-15T01:00",
+        "predicted_aqi": 49,
+        "nodes": {
+            "center": 55,
+            "north": 43,
+            "south": 54,
+            "east": 53,
+            "west": 41
+        }
+    },
+    {
+        "hour_offset": 26,
+        "timestamp": "2026-07-15T02:00",
+        "predicted_aqi": 44,
+        "nodes": {
+            "center": 54,
+            "north": 32,
+            "south": 41,
+            "east": 54,
+            "west": 43
+        }
+    },
+    {
+        "hour_offset": 27,
+        "timestamp": "2026-07-15T03:00",
+        "predicted_aqi": 40,
+        "nodes": {
+            "center": 54,
+            "north": 36,
+            "south": 30,
+            "east": 47,
+            "west": 37
+        }
+    },
+    {
+        "hour_offset": 28,
+        "timestamp": "2026-07-15T04:00",
+        "predicted_aqi": 36,
+        "nodes": {
+            "center": 51,
+            "north": 30,
+            "south": 21,
+            "east": 52,
+            "west": 30
+        }
+    },
+    {
+        "hour_offset": 29,
+        "timestamp": "2026-07-15T05:00",
+        "predicted_aqi": 34,
+        "nodes": {
+            "center": 36,
+            "north": 31,
+            "south": 20,
+            "east": 51,
+            "west": 34
+        }
+    },
+    {
+        "hour_offset": 30,
+        "timestamp": "2026-07-15T06:00",
+        "predicted_aqi": 36,
+        "nodes": {
+            "center": 52,
+            "north": 34,
+            "south": 20,
+            "east": 44,
+            "west": 32
+        }
+    },
+    {
+        "hour_offset": 31,
+        "timestamp": "2026-07-15T07:00",
+        "predicted_aqi": 34,
+        "nodes": {
+            "center": 44,
+            "north": 30,
+            "south": 22,
+            "east": 41,
+            "west": 33
+        }
+    },
+    {
+        "hour_offset": 32,
+        "timestamp": "2026-07-15T08:00",
+        "predicted_aqi": 32,
+        "nodes": {
+            "center": 44,
+            "north": 29,
+            "south": 21,
+            "east": 38,
+            "west": 31
+        }
+    },
+    {
+        "hour_offset": 33,
+        "timestamp": "2026-07-15T09:00",
+        "predicted_aqi": 32,
+        "nodes": {
+            "center": 37,
+            "north": 32,
+            "south": 28,
+            "east": 38,
+            "west": 28
+        }
+    },
+    {
+        "hour_offset": 34,
+        "timestamp": "2026-07-15T10:00",
+        "predicted_aqi": 33,
+        "nodes": {
+            "center": 38,
+            "north": 29,
+            "south": 27,
+            "east": 42,
+            "west": 31
+        }
+    },
+    {
+        "hour_offset": 35,
+        "timestamp": "2026-07-15T11:00",
+        "predicted_aqi": 40,
+        "nodes": {
+            "center": 45,
+            "north": 36,
+            "south": 36,
+            "east": 45,
+            "west": 39
+        }
+    },
+    {
+        "hour_offset": 36,
+        "timestamp": "2026-07-15T12:00",
+        "predicted_aqi": 45,
+        "nodes": {
+            "center": 57,
+            "north": 38,
+            "south": 38,
+            "east": 57,
+            "west": 38
+        }
+    },
+    {
+        "hour_offset": 37,
+        "timestamp": "2026-07-15T13:00",
+        "predicted_aqi": 42,
+        "nodes": {
+            "center": 44,
+            "north": 38,
+            "south": 36,
+            "east": 59,
+            "west": 37
+        }
+    },
+    {
+        "hour_offset": 38,
+        "timestamp": "2026-07-15T14:00",
+        "predicted_aqi": 36,
+        "nodes": {
+            "center": 35,
+            "north": 35,
+            "south": 29,
+            "east": 51,
+            "west": 32
+        }
+    },
+    {
+        "hour_offset": 39,
+        "timestamp": "2026-07-15T15:00",
+        "predicted_aqi": 44,
+        "nodes": {
+            "center": 51,
+            "north": 37,
+            "south": 46,
+            "east": 50,
+            "west": 37
+        }
+    },
+    {
+        "hour_offset": 40,
+        "timestamp": "2026-07-15T16:00",
+        "predicted_aqi": 44,
+        "nodes": {
+            "center": 50,
+            "north": 37,
+            "south": 38,
+            "east": 57,
+            "west": 40
+        }
+    },
+    {
+        "hour_offset": 41,
+        "timestamp": "2026-07-15T17:00",
+        "predicted_aqi": 45,
+        "nodes": {
+            "center": 51,
+            "north": 37,
+            "south": 45,
+            "east": 57,
+            "west": 36
+        }
+    },
+    {
+        "hour_offset": 42,
+        "timestamp": "2026-07-15T18:00",
+        "predicted_aqi": 47,
+        "nodes": {
+            "center": 44,
+            "north": 45,
+            "south": 50,
+            "east": 50,
+            "west": 46
+        }
+    },
+    {
+        "hour_offset": 43,
+        "timestamp": "2026-07-15T19:00",
+        "predicted_aqi": 48,
+        "nodes": {
+            "center": 46,
+            "north": 49,
+            "south": 48,
+            "east": 49,
+            "west": 51
+        }
+    },
+    {
+        "hour_offset": 44,
+        "timestamp": "2026-07-15T20:00",
+        "predicted_aqi": 51,
+        "nodes": {
+            "center": 51,
+            "north": 52,
+            "south": 47,
+            "east": 52,
+            "west": 55
+        }
+    },
+    {
+        "hour_offset": 45,
+        "timestamp": "2026-07-15T21:00",
+        "predicted_aqi": 43,
+        "nodes": {
+            "center": 52,
+            "north": 42,
+            "south": 31,
+            "east": 46,
+            "west": 46
+        }
+    },
+    {
+        "hour_offset": 46,
+        "timestamp": "2026-07-15T22:00",
+        "predicted_aqi": 43,
+        "nodes": {
+            "center": 49,
+            "north": 47,
+            "south": 27,
+            "east": 49,
+            "west": 47
+        }
+    },
+    {
+        "hour_offset": 47,
+        "timestamp": "2026-07-15T23:00",
+        "predicted_aqi": 40,
+        "nodes": {
+            "center": 45,
+            "north": 42,
+            "south": 21,
+            "east": 50,
+            "west": 46
+        }
+    },
+    {
+        "hour_offset": 48,
+        "timestamp": "2026-07-16T00:00",
+        "predicted_aqi": 37,
+        "nodes": {
+            "center": 48,
+            "north": 35,
+            "south": 20,
+            "east": 51,
+            "west": 31
+        }
+    },
+    {
+        "hour_offset": 49,
+        "timestamp": "2026-07-16T01:00",
+        "predicted_aqi": 33,
+        "nodes": {
+            "center": 43,
+            "north": 31,
+            "south": 20,
+            "east": 43,
+            "west": 32
+        }
+    },
+    {
+        "hour_offset": 50,
+        "timestamp": "2026-07-16T02:00",
+        "predicted_aqi": 29,
+        "nodes": {
+            "center": 39,
+            "north": 20,
+            "south": 20,
+            "east": 44,
+            "west": 25
+        }
+    },
+    {
+        "hour_offset": 51,
+        "timestamp": "2026-07-16T03:00",
+        "predicted_aqi": 27,
+        "nodes": {
+            "center": 33,
+            "north": 20,
+            "south": 20,
+            "east": 41,
+            "west": 24
+        }
+    },
+    {
+        "hour_offset": 52,
+        "timestamp": "2026-07-16T04:00",
+        "predicted_aqi": 25,
+        "nodes": {
+            "center": 29,
+            "north": 20,
+            "south": 20,
+            "east": 39,
+            "west": 20
+        }
+    },
+    {
+        "hour_offset": 53,
+        "timestamp": "2026-07-16T05:00",
+        "predicted_aqi": 23,
+        "nodes": {
+            "center": 26,
+            "north": 20,
+            "south": 20,
+            "east": 32,
+            "west": 20
+        }
+    },
+    {
+        "hour_offset": 54,
+        "timestamp": "2026-07-16T06:00",
+        "predicted_aqi": 25,
+        "nodes": {
+            "center": 31,
+            "north": 25,
+            "south": 20,
+            "east": 32,
+            "west": 20
+        }
+    },
+    {
+        "hour_offset": 55,
+        "timestamp": "2026-07-16T07:00",
+        "predicted_aqi": 25,
+        "nodes": {
+            "center": 31,
+            "north": 20,
+            "south": 20,
+            "east": 34,
+            "west": 20
+        }
+    },
+    {
+        "hour_offset": 56,
+        "timestamp": "2026-07-16T08:00",
+        "predicted_aqi": 25,
+        "nodes": {
+            "center": 29,
+            "north": 21,
+            "south": 21,
+            "east": 33,
+            "west": 21
+        }
+    },
+    {
+        "hour_offset": 57,
+        "timestamp": "2026-07-16T09:00",
+        "predicted_aqi": 27,
+        "nodes": {
+            "center": 28,
+            "north": 26,
+            "south": 22,
+            "east": 37,
+            "west": 26
+        }
+    },
+    {
+        "hour_offset": 58,
+        "timestamp": "2026-07-16T10:00",
+        "predicted_aqi": 35,
+        "nodes": {
+            "center": 42,
+            "north": 32,
+            "south": 26,
+            "east": 40,
+            "west": 37
+        }
+    },
+    {
+        "hour_offset": 59,
+        "timestamp": "2026-07-16T11:00",
+        "predicted_aqi": 38,
+        "nodes": {
+            "center": 45,
+            "north": 37,
+            "south": 27,
+            "east": 45,
+            "west": 38
+        }
+    },
+    {
+        "hour_offset": 60,
+        "timestamp": "2026-07-16T12:00",
+        "predicted_aqi": 42,
+        "nodes": {
+            "center": 45,
+            "north": 39,
+            "south": 35,
+            "east": 56,
+            "west": 39
+        }
+    },
+    {
+        "hour_offset": 61,
+        "timestamp": "2026-07-16T13:00",
+        "predicted_aqi": 45,
+        "nodes": {
+            "center": 45,
+            "north": 39,
+            "south": 45,
+            "east": 57,
+            "west": 39
+        }
+    },
+    {
+        "hour_offset": 62,
+        "timestamp": "2026-07-16T14:00",
+        "predicted_aqi": 46,
+        "nodes": {
+            "center": 46,
+            "north": 39,
+            "south": 48,
+            "east": 57,
+            "west": 43
+        }
+    },
+    {
+        "hour_offset": 63,
+        "timestamp": "2026-07-16T15:00",
+        "predicted_aqi": 46,
+        "nodes": {
+            "center": 55,
+            "north": 39,
+            "south": 42,
+            "east": 56,
+            "west": 40
+        }
+    },
+    {
+        "hour_offset": 64,
+        "timestamp": "2026-07-16T16:00",
+        "predicted_aqi": 39,
+        "nodes": {
+            "center": 45,
+            "north": 35,
+            "south": 32,
+            "east": 47,
+            "west": 39
+        }
+    },
+    {
+        "hour_offset": 65,
+        "timestamp": "2026-07-16T17:00",
+        "predicted_aqi": 45,
+        "nodes": {
+            "center": 47,
+            "north": 41,
+            "south": 40,
+            "east": 57,
+            "west": 40
+        }
+    },
+    {
+        "hour_offset": 66,
+        "timestamp": "2026-07-16T18:00",
+        "predicted_aqi": 48,
+        "nodes": {
+            "center": 50,
+            "north": 44,
+            "south": 47,
+            "east": 56,
+            "west": 45
+        }
+    },
+    {
+        "hour_offset": 67,
+        "timestamp": "2026-07-16T19:00",
+        "predicted_aqi": 51,
+        "nodes": {
+            "center": 53,
+            "north": 49,
+            "south": 54,
+            "east": 49,
+            "west": 52
+        }
+    },
+    {
+        "hour_offset": 68,
+        "timestamp": "2026-07-16T20:00",
+        "predicted_aqi": 52,
+        "nodes": {
+            "center": 50,
+            "north": 55,
+            "south": 52,
+            "east": 53,
+            "west": 52
+        }
+    },
+    {
+        "hour_offset": 69,
+        "timestamp": "2026-07-16T21:00",
+        "predicted_aqi": 50,
+        "nodes": {
+            "center": 52,
+            "north": 52,
+            "south": 44,
+            "east": 54,
+            "west": 51
+        }
+    },
+    {
+        "hour_offset": 70,
+        "timestamp": "2026-07-16T22:00",
+        "predicted_aqi": 49,
+        "nodes": {
+            "center": 53,
+            "north": 48,
+            "south": 43,
+            "east": 55,
+            "west": 46
+        }
+    },
+    {
+        "hour_offset": 71,
+        "timestamp": "2026-07-16T23:00",
+        "predicted_aqi": 35,
+        "nodes": {
+            "center": 43,
+            "north": 35,
+            "south": 23,
+            "east": 40,
+            "west": 35
+        }
+    }
+]

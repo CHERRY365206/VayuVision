@@ -1,0 +1,25 @@
+# --- Python Specifics ---
+__pycache__/
+*.py[cod]
+*$py.class
+
+# --- Environments (Keep your local setup out of Git) ---
+venv/
+.venv/
+env/
+ENV/
+
+# --- Sensitive Data (CRITICAL: Never commit these!) ---
+.env
+.env.*
+!.env.example
+
+# --- IDEs & OS Metadata ---
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# --- Logs & Temp Files ---
+*.log
+*.tmp

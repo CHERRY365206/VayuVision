@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VayuVision | Command Center</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <div class="logo-container">
+                <h1>VAYU<span>VISION</span></h1>
+                <p class="subtitle">AI-Powered Air Quality Intelligence</p>
+            </div>
+
+            <div class="data-card">
+                <h3>Live Weather (Hyderabad)</h3>
+                <div id="weather-widget">
+                    <p>Loading meteorological data...</p>
+                </div>
+            </div>
+
+            <div class="data-card alert-card">
+                <h3>🚨 Actionable Civic Alerts</h3>
+                <div id="ai-alert-widget" class="alert-log">
+                    <p class="status-nominal">⚡ System Monitoring Active. Move timeline slider to simulate dispersion.</p>
+                </div>
+            </div>
+        </aside>
+
+        <main class="map-container">
+            <div id="vayu-map"></div>
+            
+            <div class="timeline-control-panel">
+                <div class="slider-header">
+                    <span>🔮 AI Forecast Timeline</span>
+                    <span id="timeline-time-display" class="time-highlight">Current Baseline</span>
+                </div>
+                <input type="range" id="timeline-slider" min="0" max="23" value="0" step="1">
+                <div class="slider-labels">
+                    <span>0h (Now)</span>
+                    <span>24h</span>
+                    <span>48h</span>
+                    <span>72h (Max)</span>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

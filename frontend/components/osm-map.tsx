@@ -1,0 +1,304 @@
+'use client'
+
+import { useEffect } from 'react'
+import { MapContainer, TileLayer, ZoomControl, Polygon, Popup, CircleMarker, Tooltip, useMap } from 'react-leaflet'
+import 'leaflet/dist/leaflet.css'
+
+
+// 1. AQI Color Helper
+function getAqiColor(aqi: number) {
+  if (aqi < 50) return '#10b981' // Safe
+  if (aqi < 100) return '#f59e0b' // Moderate
+  if (aqi < 150) return '#f97316' // Poor
+  return '#e11d48' // Severe
+}
+
+// 2. Hexagon Math Helper
+function getHexagonPoints(lat: number, lng: number, radiusDegree: number): [number, number][] {
+  const points: [number, number][] = []
+  for (let i = 0; i < 6; i++) {
+    const angle_deg = 60 * i + 30
+    const angle_rad = (Math.PI / 180) * angle_deg
+    points.push([
+      lat + radiusDegree * Math.sin(angle_rad),
+      lng + (radiusDegree * Math.cos(angle_rad)) * 1.05
+    ])
+  }
+  return points
+}
+
+// 3. Triangle Math Helper (For All POIs)
+function getTrianglePoints(lat: number, lng: number, radiusDegree: number): [number, number][] {
+  const points: [number, number][] = []
+  for (let i = 0; i < 3; i++) {
+    const angle_rad = (Math.PI / 180) * (i * 120) // 0, 120, 240 degrees
+    points.push([
+      lat + radiusDegree * Math.cos(angle_rad), // Pointing North (Up)
+      lng + (radiusDegree * Math.sin(angle_rad)) * 1.05 
+    ])
+  }
+  return points
+}
+
+// 4. Cinematic Camera Controller
+function MapCameraController({ center }: { center: [number, number] }) {
+  const map = useMap()
+  useEffect(() => {
+    map.flyTo(center, 11, { duration: 2.5, easeLinearity: 0.25 }) // Zoomed out slightly to 11 for Delhi's massive size
+  }, [center, map])
+  return null
+}
+
+// ========================================================
+// THE MASSIVE HYDERABAD POI DATABASE 
+// ========================================================
+const HYD_POIS = [
+  { id: 'i1', lat: 17.4560, lng: 78.4430, type: 'industrial', name: 'Sanathnagar Industrial Estate' },
+  { id: 'i2', lat: 17.5140, lng: 78.4670, type: 'industrial', name: 'Jeedimetla Chemical Park' },
+  { id: 'i3', lat: 17.5287, lng: 78.2667, type: 'industrial', name: 'Patancheru Heavy Industry Belt' },
+  { id: 'i4', lat: 17.4690, lng: 78.4480, type: 'industrial', name: 'Balanagar Factory Zone' },
+  { id: 'i5', lat: 17.3150, lng: 78.4230, type: 'industrial', name: 'Katedan Industrial Area' },
+  { id: 'i6', lat: 17.4260, lng: 78.5820, type: 'industrial', name: 'Nacharam Industrial Area' },
+  { id: 'i7', lat: 17.4530, lng: 78.6010, type: 'industrial', name: 'Cherlapally Industrial Park' },
+  { id: 'i8', lat: 17.4380, lng: 78.5710, type: 'industrial', name: 'Mallapur Industrial Belt' },
+  { id: 'i9', lat: 17.5180, lng: 78.4980, type: 'industrial', name: 'Bolarum Industrial Area' },
+  { id: 'h1', lat: 17.4243, lng: 78.5035, type: 'hospital', name: 'Gandhi General Hospital' },
+  { id: 'h2', lat: 17.4227, lng: 78.4101, type: 'hospital', name: 'Apollo Health City Jubilee Hills' },
+  { id: 'h3', lat: 17.3712, lng: 78.4800, type: 'hospital', name: 'Osmania General Hospital' },
+  { id: 'h4', lat: 17.4410, lng: 78.5020, type: 'hospital', name: 'Yashoda Hospital (Secunderabad)' },
+  { id: 'h5', lat: 17.4430, lng: 78.4820, type: 'hospital', name: 'KIMS Hospitals (Begumpet)' },
+  { id: 'h6', lat: 17.4270, lng: 78.4550, type: 'hospital', name: 'NIMS (Punjagutta)' },
+  { id: 'h7', lat: 17.4170, lng: 78.4480, type: 'hospital', name: 'Care Hospitals (Banjara Hills)' },
+  { id: 'h8', lat: 17.4435, lng: 78.3653, type: 'hospital', name: 'AIG Hospitals (Gachibowli)' },
+  { id: 'h9', lat: 17.4160, lng: 78.3420, type: 'hospital', name: 'Continental Hospitals' },
+  { id: 'h10', lat: 17.4450, lng: 78.3840, type: 'hospital', name: 'Medicover Hospitals (HITEC City)' },
+  { id: 's1', lat: 17.4138, lng: 78.5284, type: 'school', name: 'Osmania University Campus' },
+  { id: 's2', lat: 17.4933, lng: 78.3914, type: 'school', name: 'JNTU Hyderabad' },
+  { id: 's3', lat: 17.5975, lng: 78.1215, type: 'school', name: 'IIT Hyderabad (Kandi Campus)' },
+  { id: 's4', lat: 17.4600, lng: 78.3268, type: 'school', name: 'University of Hyderabad (UoH)' },
+  { id: 's5', lat: 17.4450, lng: 78.3480, type: 'school', name: 'IIIT Hyderabad' },
+  { id: 's6', lat: 17.5450, lng: 78.5710, type: 'school', name: 'BITS Pilani Hyderabad Campus' },
+  { id: 's7', lat: 17.4418, lng: 78.4658, type: 'school', name: 'Hyderabad Public School (Begumpet)' },
+  { id: 's8', lat: 17.4214, lng: 78.3371, type: 'school', name: 'Oakridge International (Gachibowli)' },
+  { id: 's9', lat: 17.4568, lng: 78.3551, type: 'school', name: 'Chirec Public Campus' },
+  { id: 's10', lat: 17.4320, lng: 78.3640, type: 'school', name: 'Maulana Azad National Urdu University' },
+  { id: 's11', lat: 17.6200, lng: 78.5600, type: 'school', name: 'NALSAR University of Law' },
+  { id: 'm1', lat: 17.4340, lng: 78.3860, type: 'mall', name: 'Inorbit Mall (Madhapur)' },
+  { id: 'm2', lat: 17.4570, lng: 78.3640, type: 'mall', name: 'Sarath City Capital Mall (Kondapur)' },
+  { id: 'm3', lat: 17.4840, lng: 78.3890, type: 'mall', name: 'Nexus Mall / Forum Sujana (KPHB)' },
+  { id: 'm4', lat: 17.4180, lng: 78.4480, type: 'mall', name: 'GVK One Mall (Banjara Hills)' },
+  { id: 'm5', lat: 17.4565, lng: 78.3645, type: 'mall', name: 'AMB Cinemas & Mall' },
+  { id: 'm6', lat: 17.4310, lng: 78.4490, type: 'mall', name: 'L&T Next Galleria (Irrum Manzil)' },
+  { id: 'm7', lat: 17.4260, lng: 78.4520, type: 'mall', name: 'L&T Next Galleria (Punjagutta)' },
+  { id: 'm8', lat: 17.4270, lng: 78.4510, type: 'mall', name: 'Hyderabad Central' },
+  { id: 'm9', lat: 17.4160, lng: 78.4470, type: 'mall', name: 'City Center Mall (Banjara Hills)' },
+  { id: 'm10', lat: 17.5020, lng: 78.3370, type: 'mall', name: 'GSM Mall (Miyapur)' },
+]
+
+// ========================================================
+// THE NEW DELHI POI DATABASE 
+// ========================================================
+const DELHI_POIS = [
+  { id: 'd-i1', lat: 28.5250, lng: 77.2790, type: 'industrial', name: 'Okhla Industrial Estate' },
+  { id: 'd-i2', lat: 28.6360, lng: 77.1420, type: 'industrial', name: 'Naraina Industrial Area' },
+  { id: 'd-i3', lat: 28.7990, lng: 77.0620, type: 'industrial', name: 'Bawana Industrial Area' },
+  { id: 'd-i4', lat: 28.6310, lng: 77.1290, type: 'industrial', name: 'Mayapuri Industrial Area' },
+  { id: 'd-i5', lat: 28.6290, lng: 77.3030, type: 'industrial', name: 'Patparganj Industrial Area' },
+  { id: 'd-i6', lat: 28.6980, lng: 77.1630, type: 'industrial', name: 'Wazirpur Industrial Area' },
+  { id: 'd-i7', lat: 28.8430, lng: 77.0910, type: 'industrial', name: 'Narela Industrial Park' },
+  { id: 'd-i8', lat: 28.6940, lng: 77.0860, type: 'industrial', name: 'Mangolpuri Industrial Area' },
+  { id: 'd-i9', lat: 28.6480, lng: 77.1440, type: 'industrial', name: 'Kirti Nagar Industrial Area' },
+  { id: 'd-h1', lat: 28.5672, lng: 77.2100, type: 'hospital', name: 'AIIMS New Delhi' },
+  { id: 'd-h2', lat: 28.5686, lng: 77.2045, type: 'hospital', name: 'Safdarjung Hospital' },
+  { id: 'd-h3', lat: 28.5410, lng: 77.2830, type: 'hospital', name: 'Indraprastha Apollo' },
+  { id: 'd-h4', lat: 28.5270, lng: 77.2120, type: 'hospital', name: 'Max Super Speciality Saket' },
+  { id: 'd-h5', lat: 28.5580, lng: 77.2730, type: 'hospital', name: 'Fortis Escorts Heart Institute' },
+  { id: 'd-h6', lat: 28.6380, lng: 77.1890, type: 'hospital', name: 'Sir Ganga Ram Hospital' },
+  { id: 'd-h7', lat: 28.6250, lng: 77.1980, type: 'hospital', name: 'RML Hospital' },
+  { id: 'd-h8', lat: 28.6380, lng: 77.2400, type: 'hospital', name: 'Lok Nayak (LNJP) Hospital' },
+  { id: 'd-h9', lat: 28.6430, lng: 77.1810, type: 'hospital', name: 'BLK Super Speciality Hospital' },
+  { id: 'd-h10', lat: 28.5610, lng: 77.2760, type: 'hospital', name: 'Holy Family Hospital' },
+  { id: 'd-s1', lat: 28.6883, lng: 77.2064, type: 'school', name: 'Delhi University (North Campus)' },
+  { id: 'd-s2', lat: 28.5400, lng: 77.1650, type: 'school', name: 'Jawaharlal Nehru University (JNU)' },
+  { id: 'd-s3', lat: 28.5450, lng: 77.1926, type: 'school', name: 'IIT Delhi' },
+  { id: 'd-s4', lat: 28.5610, lng: 77.2830, type: 'school', name: 'Jamia Millia Islamia' },
+  { id: 'd-s5', lat: 28.5950, lng: 77.0190, type: 'school', name: 'Guru Gobind Singh IP University' },
+  { id: 'd-s6', lat: 28.7500, lng: 77.1170, type: 'school', name: 'Delhi Technological University (DTU)' },
+  { id: 'd-s7', lat: 28.6090, lng: 77.0340, type: 'school', name: 'Netaji Subhas University (NSUT)' },
+  { id: 'd-s8', lat: 28.5450, lng: 77.2720, type: 'school', name: 'IIIT Delhi' },
+  { id: 'd-s9', lat: 28.6660, lng: 77.2310, type: 'school', name: 'Ambedkar University' },
+  { id: 'd-s10', lat: 28.4960, lng: 77.1960, type: 'school', name: 'IGNOU Main Campus' },
+  { id: 'd-m1', lat: 28.5285, lng: 77.2192, type: 'mall', name: 'Select CITYWALK' },
+  { id: 'd-m2', lat: 28.5418, lng: 77.1488, type: 'mall', name: 'DLF Promenade' },
+  { id: 'd-m3', lat: 28.6420, lng: 77.1060, type: 'mall', name: 'Pacific Mall (Tagore Garden)' },
+  { id: 'd-m4', lat: 28.5420, lng: 77.1490, type: 'mall', name: 'DLF Emporio' },
+  { id: 'd-m5', lat: 28.5400, lng: 77.1500, type: 'mall', name: 'Ambience Mall (Vasant Kunj)' },
+  { id: 'd-m6', lat: 28.5980, lng: 77.0290, type: 'mall', name: 'Vegas Mall (Dwarka)' },
+  { id: 'd-m7', lat: 28.6500, lng: 77.1210, type: 'mall', name: 'City Square Mall' },
+  { id: 'd-m8', lat: 28.6510, lng: 77.1220, type: 'mall', name: 'TDI Mall (Rajouri Garden)' },
+  { id: 'd-m9', lat: 28.7230, lng: 77.1120, type: 'mall', name: 'Metro Walk Mall (Rohini)' },
+  { id: 'd-m10', lat: 28.6360, lng: 77.2870, type: 'mall', name: 'V3S Mall (Nirman Vihar)' },
+]
+
+export default function OsmMap({ 
+  aqiData, 
+  weatherData, 
+  layers,
+  forecastData = [],    
+  currentHour = 0,
+  activeCity = 'hyderabad' 
+}: { 
+  aqiData: any, 
+  weatherData: any, 
+  layers: any,
+  forecastData?: any[],
+  currentHour?: number,
+  activeCity?: string
+}) {
+  
+  const centerPosition: [number, number] = activeCity === 'delhi' ? [28.6139, 77.2090] : [17.3850, 78.4867]
+  const ACTIVE_POIS = activeCity === 'delhi' ? DELHI_POIS : HYD_POIS
+
+  const currentForecast = forecastData?.[currentHour]
+  const nodes = currentForecast?.nodes || { center: 40, north: 40, south: 40, east: 40, west: 40 }
+
+  const getPredictedAqiForLocation = (lat: number, lng: number, cLat: number, cLng: number) => {
+    if (lat > cLat + 0.065) return nodes.north; 
+    if (lat < cLat - 0.065) return nodes.south; 
+    if (lng > cLng + 0.035) return nodes.east;  
+    if (lng < cLng - 0.065) return nodes.west;  
+    return nodes.center;                 
+  }
+
+  // 🧠 NEW ARCHITECTURE: The Golden Ratio / Sunflower Spiral Matrix
+  // This calculates the perfect even distribution covering the absolute center stretching outwards.
+  const getSpiralCoordinates = (index: number, totalNodes: number) => {
+    const goldenAngle = 137.5 * (Math.PI / 180); // 137.5 degrees in radians
+    
+    // Delhi is a massively spread out city compared to Hyderabad, so it needs a wider coverage radius
+    const maxRadius = activeCity === 'delhi' ? 0.35 : 0.18; 
+    
+    // The radius grows outward as the index increases, covering the center first!
+    const radius = Math.sqrt(index / totalNodes) * maxRadius;
+    const theta = index * goldenAngle;
+
+    const lat = centerPosition[0] + (Math.cos(theta) * radius);
+    const lng = centerPosition[1] + (Math.sin(theta) * radius * 1.1); // 1.1 squishes it slightly into an ellipse matching projection
+
+    return { lat, lng };
+  }
+
+  return (
+    <MapContainer 
+      center={centerPosition} 
+      zoom={11} 
+      zoomControl={false}
+      style={{ height: '100vh', width: '100vw', position: 'absolute', zIndex: 0, backgroundColor: '#020617' }}
+    >
+      <ZoomControl position="bottomright" />
+      <MapCameraController center={centerPosition} />
+      
+      <TileLayer
+        attribution='&copy; OpenStreetMap'
+        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        className="map-tiles"
+      />
+
+      {/* LAYER OVERLAY 1: AQI Hexagon Mesh */}
+      {layers.danger && aqiData?.records?.map((record: any, index: number) => {
+        
+        // Deploying the Fermat Spiral algorithm
+        const totalNodes = aqiData.records.length || 40;
+        const { lat: spreadLat, lng: spreadLng } = getSpiralCoordinates(index, totalNodes);
+        
+        const hexPoints = getHexagonPoints(spreadLat, spreadLng, 0.007); 
+        const displayAqi = getPredictedAqiForLocation(spreadLat, spreadLng, centerPosition[0], centerPosition[1]);
+
+        if (record.pollutant_avg > 0 || displayAqi > 0) { 
+          return (
+            <Polygon
+              key={`hex-${activeCity}-${index}`}
+              positions={hexPoints}
+              pathOptions={{
+                color: getAqiColor(displayAqi),
+                fillColor: getAqiColor(displayAqi),
+                fillOpacity: 0.4,
+                weight: 2,
+              }}
+            >
+              <Popup className="glass-popup">
+                <div className="bg-slate-900 text-cyan-50 p-3 rounded-lg border border-slate-700 shadow-xl">
+                  <h3 className="font-bold text-lg mb-1 text-white uppercase">
+                    GRID SECTOR: {activeCity.substring(0,3)}-{index + 1}
+                  </h3>
+                  <p className="text-xs text-slate-400 mb-2">Live Telemetry Node: Active</p>
+                  <div className="text-sm">
+                    <p>
+                      <span className="text-slate-400">{currentHour === 0 ? "Live AQI:" : `Predicted AQI (+${currentHour}h):`}</span> 
+                      <strong className="ml-2" style={{color: getAqiColor(displayAqi)}}>{displayAqi}</strong>
+                    </p>
+                  </div>
+                </div>
+              </Popup>
+            </Polygon>
+          )
+        }
+        return null
+      })}
+
+      {/* LAYER OVERLAY 2: High-Impact POI Markers */}
+      {ACTIVE_POIS.map((poi) => {
+        const isVisible = 
+          (poi.type === 'industrial' && layers.industrial) ||
+          (poi.type === 'hospital' && layers.hospitals) ||
+          (poi.type === 'school' && layers.schools) ||
+          (poi.type === 'mall' && layers.malls)
+
+        if (!isVisible) return null;
+
+        let markerColor = '#f59e0b'; // Default Orange
+        if (poi.type === 'hospital') markerColor = '#06b6d4'; // Cyan
+        if (poi.type === 'school') markerColor = '#22c55e'; // Green
+        if (poi.type === 'mall') markerColor = '#a855f7'; // Purple
+
+        return (
+          <Polygon
+            key={poi.id}
+            positions={getTrianglePoints(poi.lat, poi.lng, 0.006)} 
+            pathOptions={{ color: markerColor, fillColor: markerColor, fillOpacity: 0.9, weight: 2 }}
+          >
+            <Tooltip direction="top" offset={[0, -10]} opacity={1}>
+              <span className="font-bold">{poi.name}</span>
+            </Tooltip>
+          </Polygon>
+        )
+      })}
+
+      {/* LAYER OVERLAY 3: Physical Citizen IoT Nodes */}
+      {layers.iot && aqiData?.records?.map((record: any, index: number) => {
+        
+        // Syncing IoT nodes directly to the same Spiral pattern
+        const totalNodes = aqiData.records.length || 40;
+        const { lat: spreadLat, lng: spreadLng } = getSpiralCoordinates(index, totalNodes);
+
+        return (
+          <CircleMarker
+            key={`node-${activeCity}-${index}`}
+            center={[spreadLat, spreadLng]}
+            radius={3} 
+            pathOptions={{
+              color: '#00f6ff', 
+              fillColor: '#00f6ff',
+              fillOpacity: 1,
+              weight: 1,
+            }}
+          >
+            <Tooltip direction="top" opacity={1}>
+              <span className="font-bold text-xs uppercase">VayuVision IoT Node #{index + 1} ({activeCity.substring(0,3)})</span>
+            </Tooltip>
+          </CircleMarker>
+        )
+      })}
+    </MapContainer>
+  )
+}
