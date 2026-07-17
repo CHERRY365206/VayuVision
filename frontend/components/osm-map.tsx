@@ -140,6 +140,40 @@ const DELHI_POIS = [
   { id: 'd-m10', lat: 28.6360, lng: 77.2870, type: 'mall', name: 'V3S Mall (Nirman Vihar)' },
 ]
 
+// ========================================================
+// THE BENGALURU POI DATABASE 
+// ========================================================
+const BENGALURU_POIS = [
+  { id: 'b-i1', lat: 13.0310, lng: 77.5180, type: 'industrial', name: 'Peenya Industrial Area' },
+  { id: 'b-i2', lat: 12.8452, lng: 77.6602, type: 'industrial', name: 'Electronic City Phase 1' },
+  { id: 'b-i3', lat: 12.8160, lng: 77.6920, type: 'industrial', name: 'Bommasandra Industrial Area' },
+  { id: 'b-h1', lat: 12.9372, lng: 77.5942, type: 'hospital', name: 'NIMHANS' },
+  { id: 'b-h2', lat: 12.9585, lng: 77.6443, type: 'hospital', name: 'Manipal Hospital (Old Airport Rd)' },
+  { id: 'b-h3', lat: 12.8940, lng: 77.5970, type: 'hospital', name: 'Fortis Hospital (Bannerghatta)' },
+  { id: 'b-s1', lat: 13.0163, lng: 77.5670, type: 'school', name: 'Indian Institute of Science (IISc)' },
+  { id: 'b-s2', lat: 12.8913, lng: 77.5980, type: 'school', name: 'IIM Bangalore' },
+  { id: 'b-s3', lat: 12.9230, lng: 77.4990, type: 'school', name: 'RV College of Engineering' },
+  { id: 'b-m1', lat: 13.0108, lng: 77.5546, type: 'mall', name: 'Orion Mall' },
+  { id: 'b-m2', lat: 12.9965, lng: 77.6957, type: 'mall', name: 'Phoenix Marketcity' },
+]
+
+// ========================================================
+// THE CHENNAI POI DATABASE 
+// ========================================================
+const CHENNAI_POIS = [
+  { id: 'c-i1', lat: 13.0970, lng: 80.1600, type: 'industrial', name: 'Ambattur Industrial Estate' },
+  { id: 'c-i2', lat: 13.0070, lng: 80.2080, type: 'industrial', name: 'Guindy Industrial Estate' },
+  { id: 'c-i3', lat: 12.8350, lng: 79.9570, type: 'industrial', name: 'Oragadam Auto Hub' },
+  { id: 'c-h1', lat: 13.0610, lng: 80.2520, type: 'hospital', name: 'Apollo Hospitals (Greams Rd)' },
+  { id: 'c-h2', lat: 13.0170, lng: 80.1790, type: 'hospital', name: 'MIOT International' },
+  { id: 'c-h3', lat: 13.0805, lng: 80.2764, type: 'hospital', name: 'Rajiv Gandhi Govt General Hospital' },
+  { id: 'c-s1', lat: 12.9915, lng: 80.2337, type: 'school', name: 'IIT Madras' },
+  { id: 'c-s2', lat: 13.0100, lng: 80.2370, type: 'school', name: 'Anna University' },
+  { id: 'c-s3', lat: 13.0630, lng: 80.2330, type: 'school', name: 'Loyola College' },
+  { id: 'c-m1', lat: 13.0580, lng: 80.2640, type: 'mall', name: 'Express Avenue' },
+  { id: 'c-m2', lat: 12.9910, lng: 80.2160, type: 'mall', name: 'Phoenix Marketcity (Velachery)' },
+]
+
 export default function OsmMap({ 
   aqiData, 
   weatherData, 
@@ -156,8 +190,19 @@ export default function OsmMap({
   activeCity?: string
 }) {
   
-  const centerPosition: [number, number] = activeCity === 'delhi' ? [28.6139, 77.2090] : [17.3850, 78.4867]
-  const ACTIVE_POIS = activeCity === 'delhi' ? DELHI_POIS : HYD_POIS
+  let centerPosition: [number, number] = [17.3850, 78.4867] // default Hyderabad
+  let ACTIVE_POIS = HYD_POIS
+
+  if (activeCity === 'delhi') {
+    centerPosition = [28.6139, 77.2090]
+    ACTIVE_POIS = DELHI_POIS
+  } else if (activeCity === 'bengaluru') {
+    centerPosition = [12.9716, 77.5946]
+    ACTIVE_POIS = BENGALURU_POIS
+  } else if (activeCity === 'chennai') {
+    centerPosition = [13.0827, 80.2707]
+    ACTIVE_POIS = CHENNAI_POIS
+  }
 
   const currentForecast = forecastData?.[currentHour]
   const nodes = currentForecast?.nodes || { center: 40, north: 40, south: 40, east: 40, west: 40 }
@@ -175,8 +220,12 @@ export default function OsmMap({
   const getSpiralCoordinates = (index: number, totalNodes: number) => {
     const goldenAngle = 137.5 * (Math.PI / 180); // 137.5 degrees in radians
     
-    // Delhi is a massively spread out city compared to Hyderabad, so it needs a wider coverage radius
-    const maxRadius = activeCity === 'delhi' ? 0.35 : 0.18; 
+    // Delhi is a massively spread out city compared to Hyderabad, so it needs a wider coverage radius.
+    // Bengaluru and Chennai fall in between.
+    let maxRadius = 0.18; // Default for Hyderabad
+    if (activeCity === 'delhi') maxRadius = 0.35;
+    if (activeCity === 'bengaluru') maxRadius = 0.25;
+    if (activeCity === 'chennai') maxRadius = 0.28; 
     
     // The radius grows outward as the index increases, covering the center first!
     const radius = Math.sqrt(index / totalNodes) * maxRadius;
