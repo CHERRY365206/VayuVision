@@ -54,6 +54,10 @@ def get_current_weather(city: str = "hyderabad", t: Optional[str] = None): # Rem
 
     if target_city == 'delhi':
         lat, lon = 28.6139, 77.2090
+    elif target_city == 'bengaluru':
+        lat, lon = 12.9716, 77.5946
+    elif target_city == 'chennai':
+        lat, lon = 13.0827, 80.2707
     else:
         lat, lon = 17.3850, 78.4867
 
@@ -117,23 +121,33 @@ async def get_current_aqi(city: str = "hyderabad", t: Optional[str] = None):
         except Exception as e:
             raise HTTPException(status_code=500, detail=f"Database Retrieval Failed: {str(e)}")
             
-    # DELHI: Dynamically fetch from Open-Meteo AQI API to ensure feature parity
+    # OTHER CITIES: Dynamically fetch from Open-Meteo AQI API
     else:
+        if target_city == 'delhi':
+            lat, lon = 28.6139, 77.2090
+        elif target_city == 'bengaluru':
+            lat, lon = 12.9716, 77.5946
+        elif target_city == 'chennai':
+            lat, lon = 13.0827, 80.2707
+        else:
+            lat, lon = 17.3850, 78.4867
+
         try:
-            url = "https://air-quality-api.open-meteo.com/v1/air-quality?latitude=28.6139&longitude=77.2090&current=european_aqi"
+            url = f"https://air-quality-api.open-meteo.com/v1/air-quality?latitude={lat}&longitude={lon}&current=european_aqi"
             response = requests.get(url)
             data = response.json()
-            current_aqi = data.get("current", {}).get("european_aqi", 250)
+            current_aqi = data.get("current", {}).get("european_aqi", 100)
             
             # Format to look exactly like the database records so the React map doesn't break
             records = []
+            prefix = target_city[:3].upper()
             for i in range(40):
                 # Add slight random variations across sectors for visual realism
                 variation = (i % 10) - 5
                 records.append({
-                    "station": f"DEL-Sector-{i+1}",
+                    "station": f"{prefix}-Sector-{i+1}",
                     "pollutant_id": "PM2.5",
-                    "pollutant_avg": max(50, current_aqi + variation),
+                    "pollutant_avg": max(10, current_aqi + variation),
                     "timestamp": data.get("current", {}).get("time", "")
                 })
                 
@@ -143,7 +157,7 @@ async def get_current_aqi(city: str = "hyderabad", t: Optional[str] = None):
                 "records": records
             }
         except Exception as e:
-            raise HTTPException(status_code=500, detail=f"Delhi External AQI Fetch Failed: {str(e)}")
+            raise HTTPException(status_code=500, detail=f"External AQI Fetch Failed for {target_city}: {str(e)}")
 
 
 # ==========================================
@@ -156,6 +170,10 @@ def get_forecast(city: str = "hyderabad", t: Optional[str] = None):
 
     if target_city == 'delhi':
         lat, lon = 28.6139, 77.2090
+    elif target_city == 'bengaluru':
+        lat, lon = 12.9716, 77.5946
+    elif target_city == 'chennai':
+        lat, lon = 13.0827, 80.2707
     else:
         lat, lon = 17.3850, 78.4867
 
@@ -203,7 +221,7 @@ async def get_satellite_anomalies(city: str = "hyderabad", t: Optional[str] = No
     target_city = city.lower()
     
     # We only have satellite CSV data for Hyderabad currently
-    if target_city == 'delhi':
+    if target_city != 'hyderabad':
         return []
         
     try:
