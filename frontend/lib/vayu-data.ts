@@ -139,7 +139,7 @@ export type Poi = {
   id: string
   x: number
   y: number
-  type: 'industrial' | 'hospital' | 'school'
+  type: 'industrial' | 'hospital' | 'school' | 'elderly-care' | 'construction-site'
   name: string
 }
 
@@ -153,6 +153,10 @@ export const POIS: Poi[] = [
   { id: 's1', x: 700, y: 620, type: 'school', name: 'Vidya Public School' },
   { id: 's2', x: 460, y: 180, type: 'school', name: 'St. Anne’s Academy' },
   { id: 's3', x: 1040, y: 460, type: 'school', name: 'Green Valley High' },
+  { id: 'e1', x: 320, y: 420, type: 'elderly-care', name: 'Grace Senior Living' },
+  { id: 'e2', x: 800, y: 200, type: 'elderly-care', name: 'Sunrise Care Home' },
+  { id: 'c1', x: 550, y: 350, type: 'construction-site', name: 'Metro Phase 2 Site' },
+  { id: 'c2', x: 920, y: 600, type: 'construction-site', name: 'Tech Park Expansion' },
 ]
 
 // IoT citizen sensor nodes travel along these street paths.
@@ -250,6 +254,22 @@ export async function fetchForecastData(city: string) {
     return await response.json();
   } catch (error) {
     console.error(`Predictive Engine API Error for ${city}:`, error);
+    return null; 
+  }
+}
+
+export async function fetchHealthAdvisory(city: string, aqi: number) {
+  try {
+    const timestamp = new Date().getTime();
+    const response = await fetch(`${BASE_URL}/api/health-advisory?t=${timestamp}&city=${city}&aqi=${aqi}`, {
+      cache: 'no-store'
+    });
+    
+    if (!response.ok) return null;
+    
+    return await response.json();
+  } catch (error) {
+    console.error(`Health Advisory API Error for ${city}:`, error);
     return null; 
   }
 }

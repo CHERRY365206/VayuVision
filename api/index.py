@@ -218,6 +218,80 @@ async def get_satellite_anomalies(city: str = "hyderabad", t: Optional[str] = No
         raise HTTPException(status_code=500, detail=f"Satellite Data Extraction Failure: {str(e)}")
 
 
+# ==========================================
+# 5. HEALTH ADVISORY ROUTE (AI SIMULATOR)
+# ==========================================
+@app.get("/api/health-advisory")
+def get_health_advisory(city: str = "hyderabad", aqi: int = 150):
+    """Mocks an AI-generated health advisory script and IVR in regional languages based on vulnerability and AQI."""
+    target_city = city.lower()
+    
+    # Base logic for risk levels
+    if aqi < 100:
+        risk_level = "MODERATE"
+        target_groups = ["Sensitive Individuals"]
+        english_ivr = "Air quality is moderate. Sensitive individuals should consider limiting prolonged outdoor exertion."
+    elif aqi < 200:
+        risk_level = "POOR"
+        target_groups = ["Elderly", "Children", "Outdoor Workers"]
+        english_ivr = "Air quality is poor. Children, active adults, and people with respiratory disease should limit outdoor exertion."
+    else:
+        risk_level = "SEVERE"
+        target_groups = ["All Citizens", "Schools", "Hospitals", "Elderly Care"]
+        english_ivr = "EMERGENCY. Air quality is severe. All citizens must avoid outdoor physical activities. Schools are advised to suspend outdoor assemblies."
+
+    # Language translation mappings (Mocking LLM output)
+    regional_data = {
+        "bengaluru": {
+            "language": "Kannada",
+            "push_title": "ಆರೋಗ್ಯ ಎಚ್ಚರಿಕೆ (Health Alert)",
+            "push_body": "ಗಾಳಿಯ ಗುಣಮಟ್ಟ ಕಳಪೆಯಾಗಿದೆ. ದಯವಿಟ್ಟು ಮುಖವಾಡ ಧರಿಸಿ (Air quality is poor. Please wear a mask).",
+            "ivr_script": f"ನಮಸ್ಕಾರ. ವಾಯು ಮಾಲಿನ್ಯ ಸೂಚ್ಯಂಕ {aqi} ತಲುಪಿದೆ. ದಯವಿಟ್ಟು ಮನೆಯಲ್ಲೇ ಇರಿ."
+        },
+        "chennai": {
+            "language": "Tamil",
+            "push_title": "சுகாதார எச்சரிக்கை (Health Alert)",
+            "push_body": "காற்று மாசு அதிகம். முகமூடி அணியுங்கள் (High air pollution. Wear a mask).",
+            "ivr_script": f"வணக்கம். காற்றின் தரம் {aqi} ஐ எட்டியுள்ளது. தயவுசெய்து வீட்டிலேயே இருங்கள்."
+        },
+        "hyderabad": {
+            "language": "Telugu",
+            "push_title": "ఆరోగ్య హెచ్చరిక (Health Alert)",
+            "push_body": "గాలి కాలుష్యం పెరిగింది. దయచేసి మాస్క్ ధరించండి (Air pollution increased. Please wear a mask).",
+            "ivr_script": f"నమస్కారం. గాలి నాణ్యత సూచిక {aqi} కు చేరుకుంది. దయచేసి ఇంట్లోనే ఉండండి."
+        },
+        "delhi": {
+            "language": "Hindi",
+            "push_title": "स्वास्थ्य चेतावनी (Health Alert)",
+            "push_body": "वायु प्रदूषण अधिक है। कृपया मास्क पहनें (Air pollution is high. Please wear a mask).",
+            "ivr_script": f"नमस्ते। वायु गुणवत्ता सूचकांक {aqi} तक पहुंच गया है। कृपया घर के अंदर रहें।"
+        }
+    }
+    
+    # Default to English if city not mapped
+    city_data = regional_data.get(target_city, {
+        "language": "English",
+        "push_title": "Health Alert",
+        "push_body": "Air quality is poor. Please wear a mask.",
+        "ivr_script": f"Hello. The Air Quality Index has reached {aqi}. Please stay indoors."
+    })
+
+    return {
+        "city": target_city,
+        "aqi_analyzed": aqi,
+        "risk_level": risk_level,
+        "target_vulnerable_groups": target_groups,
+        "language_detected": city_data["language"],
+        "simulated_llm_outputs": {
+            "english_ivr_base": english_ivr,
+            "regional_push_notification": {
+                "title": city_data["push_title"],
+                "body": city_data["push_body"]
+            },
+            "regional_ivr_script": city_data["ivr_script"]
+        }
+    }
+
 if __name__ == "__main__":
     import uvicorn
     # Launch the server on local port 8000

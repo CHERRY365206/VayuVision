@@ -1,8 +1,23 @@
 'use client'
 
-import { X, Code, Mail, Cpu, Database, Server } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { X, Code, Mail, Cpu, Database, Server, ShieldAlert, Loader2, Bot, Megaphone, Smartphone } from 'lucide-react'
+import { fetchHealthAdvisory } from '@/lib/vayu-data'
 
-export function OverlayModals({ active, onClose }: { active: string; onClose: () => void }) {
+export function OverlayModals({ active, onClose, activeCity = 'hyderabad', currentAqi = 40 }: { active: string; onClose: () => void; activeCity?: string; currentAqi?: number }) {
+  const [advisoryData, setAdvisoryData] = useState<any>(null)
+  const [loadingAdvisory, setLoadingAdvisory] = useState(false)
+
+  useEffect(() => {
+    if (active === 'advisory') {
+      setLoadingAdvisory(true)
+      fetchHealthAdvisory(activeCity, currentAqi).then(data => {
+        setAdvisoryData(data)
+        setLoadingAdvisory(false)
+      })
+    }
+  }, [active, activeCity, currentAqi])
+
   if (active === 'map') return null // Hide when viewing the map
 
   return (
@@ -16,6 +31,61 @@ export function OverlayModals({ active, onClose }: { active: string; onClose: ()
         >
           <X className="size-5" />
         </button>
+
+        {/* 0. CITIZEN ADVISORY MODAL */}
+        {active === 'advisory' && (
+          <div className="space-y-6">
+            <h2 className="text-2xl font-display font-bold text-foreground flex items-center gap-3">
+              <ShieldAlert className="size-6 text-red-500" />
+              Citizen Health Risk Advisory
+            </h2>
+            <p className="text-muted-foreground text-sm leading-relaxed">
+              AI-generated multi-lingual advisories mapped against vulnerable population density (hospitals, schools, outdoor workers) for {activeCity.toUpperCase()}.
+            </p>
+            
+            {loadingAdvisory || !advisoryData ? (
+              <div className="flex flex-col items-center justify-center py-10 space-y-4">
+                <Loader2 className="size-8 text-cyan-500 animate-spin" />
+                <span className="text-sm font-mono text-cyan-500 animate-pulse">GENERATING ADVISORIES IN REGIONAL LANGUAGE...</span>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="bg-black/40 p-4 rounded-xl border border-red-500/30">
+                    <div className="text-red-400 text-xs font-mono mb-1 uppercase tracking-wider">Risk Level</div>
+                    <div className="text-2xl font-bold text-red-500">{advisoryData.risk_level} <span className="text-sm font-normal text-muted-foreground">(AQI {advisoryData.aqi_analyzed})</span></div>
+                  </div>
+                  <div className="bg-black/40 p-4 rounded-xl border border-yellow-500/30">
+                    <div className="text-yellow-400 text-xs font-mono mb-1 uppercase tracking-wider">Vulnerable Demographics</div>
+                    <div className="text-sm font-bold text-yellow-500">{advisoryData.target_vulnerable_groups.join(', ')}</div>
+                  </div>
+                </div>
+
+                <div className="bg-slate-900/50 p-4 rounded-xl border border-white/5 space-y-3 relative overflow-hidden">
+                  <Bot className="absolute -right-4 -top-4 size-24 text-white/5" />
+                  <div className="flex items-center gap-2 text-cyan-400 font-mono text-xs mb-2">
+                    <Smartphone className="size-4" /> 
+                    <span>MOBILE PUSH NOTIFICATION ({advisoryData.language_detected})</span>
+                  </div>
+                  <div className="text-foreground font-bold">{advisoryData.simulated_llm_outputs.regional_push_notification.title}</div>
+                  <div className="text-muted-foreground text-sm leading-relaxed">{advisoryData.simulated_llm_outputs.regional_push_notification.body}</div>
+                </div>
+
+                <div className="bg-slate-900/50 p-4 rounded-xl border border-white/5 space-y-3 relative overflow-hidden">
+                  <Megaphone className="absolute -right-4 -top-4 size-24 text-white/5" />
+                  <div className="flex items-center gap-2 text-green-400 font-mono text-xs mb-2">
+                    <Server className="size-4" /> 
+                    <span>IVR AUTO-DIALER SCRIPT ({advisoryData.language_detected})</span>
+                  </div>
+                  <div className="text-muted-foreground text-sm leading-relaxed italic border-l-2 border-green-500/50 pl-3">
+                    "{advisoryData.simulated_llm_outputs.regional_ivr_script}"
+                  </div>
+                  <div className="text-xs text-slate-500 mt-2 font-mono">EN: {advisoryData.simulated_llm_outputs.english_ivr_base}</div>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* 1. WEATHER FORECASTS MODAL */}
         {active === 'weather' && (

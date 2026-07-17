@@ -1,12 +1,13 @@
 'use client'
 
-import { Map, CloudSun, Settings2, Info } from 'lucide-react'
+import { Map, CloudSun, Settings2, Info, ShieldAlert } from 'lucide-react'
 
 const ITEMS = [
   { id: 'map', label: 'Live Map', icon: Map },
   { id: 'weather', label: 'Weather Forecasts', icon: CloudSun },
   { id: 'settings', label: 'System Settings', icon: Settings2 },
-  { id: 'about', label: 'About Vayu', icon: Info }, // NEW ITEM ADDED
+  { id: 'advisory', label: 'Citizen Advisory', icon: ShieldAlert },
+  { id: 'about', label: 'About Vayu', icon: Info },
 ] as const
 
 export function NavPill({
