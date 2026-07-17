@@ -145,7 +145,7 @@ async function initLiveDashboard() {
     buildCityMesh();
 
     try {
-        const response = await fetch('http://127.0.0.1:8000/api/weather/current');
+        const response = await fetch('/api/weather/current');
         const weatherData = await response.json();
 
         // Update basic text components
