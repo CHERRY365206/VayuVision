@@ -145,7 +145,7 @@ async function initLiveDashboard() {
     buildCityMesh();
 
     try {
-        const response = await fetch('/api/weather/current');
+        const response = await fetch('/api/backend/get-aqi-data');
         const weatherData = await response.json();
 
         // Update basic text components
