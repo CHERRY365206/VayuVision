@@ -215,32 +215,9 @@ export default function OsmMap({
     return nodes.center;                 
   }
 
-  // 🧠 NEW ARCHITECTURE: Deterministic Geo-Scatter Matrix
-  // Replaces the spiral pattern with realistic scattered grid nodes, 
-  // keeping nodes strictly within city landmasses (especially for coastal Chennai)
-  const getDeterministicHash = (seed: number) => {
-    let t = seed + 0x6D2B79F5;
-    t = Math.imul(t ^ (t >>> 15), t | 1);
-    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
-
-  const getScatteredCoordinates = (index: number) => {
-    const r1 = getDeterministicHash(index * 123);
-    const r2 = getDeterministicHash(index * 321);
-
-    if (activeCity === 'delhi') {
-      return { lat: 28.6139 + (r1 - 0.5) * 0.45, lng: 77.2090 + (r2 - 0.5) * 0.45 };
-    } else if (activeCity === 'bengaluru') {
-      return { lat: 12.9716 + (r1 - 0.5) * 0.4, lng: 77.5946 + (r2 - 0.5) * 0.4 };
-    } else if (activeCity === 'chennai') {
-      // Chennai is coastal. Marina beach is at ~80.28. 
-      // We force longitude to only scatter WEST of 80.28 to avoid the ocean!
-      return { lat: 13.0827 + (r1 - 0.5) * 0.4, lng: 80.2800 - (r2 * 0.35) };
-    } else {
-      return { lat: 17.3850 + (r1 - 0.5) * 0.35, lng: 78.4867 + (r2 - 0.5) * 0.35 };
-    }
-  }
+  // We no longer need mathematical layout algorithms (Spiral or Scatter)
+  // because the API now delivers the EXACT real-world coordinates for 
+  // every active Air Quality Station!
 
   return (
     <MapContainer 
@@ -261,8 +238,9 @@ export default function OsmMap({
       {/* LAYER OVERLAY 1: AQI Hexagon Mesh */}
       {layers.danger && aqiData?.records?.map((record: any, index: number) => {
         
-        // Deploying the Deterministic Geo-Scatter algorithm
-        const { lat: spreadLat, lng: spreadLng } = getScatteredCoordinates(index);
+        // Connecting directly to the physical geo-coordinates sent by the backend!
+        const spreadLat = record.lat || centerPosition[0];
+        const spreadLng = record.lng || centerPosition[1];
         
         const hexPoints = getHexagonPoints(spreadLat, spreadLng, 0.007); 
         const displayAqi = getPredictedAqiForLocation(spreadLat, spreadLng, centerPosition[0], centerPosition[1]);
@@ -330,8 +308,9 @@ export default function OsmMap({
       {/* LAYER OVERLAY 3: Physical Citizen IoT Nodes */}
       {layers.iot && aqiData?.records?.map((record: any, index: number) => {
         
-        // Syncing IoT nodes directly to the same Scatter pattern
-        const { lat: spreadLat, lng: spreadLng } = getScatteredCoordinates(index);
+        // Syncing IoT nodes directly to the physical station locations
+        const spreadLat = record.lat || centerPosition[0];
+        const spreadLng = record.lng || centerPosition[1];
 
         return (
           <CircleMarker

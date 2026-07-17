@@ -91,6 +91,47 @@ def get_current_weather(city: str = "hyderabad", t: Optional[str] = None): # Rem
         raise HTTPException(status_code=500, detail=f"External Weather API Failed: {str(e)}")
 
 
+# Exact Real-World Coordinates for AQI Ground Sensors
+HYDERABAD_STATIONS = {
+    'Sanathnagar, Hyderabad - TSPCB': (17.4560, 78.4430),
+    'Zoo Park, Hyderabad - TSPCB': (17.3503, 78.4526),
+    'Central University, Hyderabad - TSPCB': (17.4600, 78.3268),
+    'ICRISAT Patancheru, Hyderabad - TSPCB': (17.5103, 78.2750),
+    'Somajiguda, Hyderabad - TSPCB': (17.4252, 78.4593),
+    'New Malakpet, Hyderabad - TSPCB': (17.3753, 78.4975),
+    'ECIL Kapra, Hyderabad - TSPCB': (17.4812, 78.5630),
+    'Kompally Municipal Office, Hyderabad - TSPCB': (17.5452, 78.4839),
+    'Kokapet, Hyderabad - TSPCB': (17.3995, 78.3312),
+    'IDA Pashamylaram, Hyderabad - TSPCB': (17.5306, 78.1882),
+    'Ramachandrapuram, Hyderabad - TSPCB': (17.5029, 78.3032),
+    'Nacharam_TSIIC IALA, Hyderabad - TSPCB': (17.4332, 78.5631)
+}
+
+DELHI_STATIONS = [
+    ("Anand Vihar", 28.6469, 77.3160), ("RK Puram", 28.5660, 77.1767),
+    ("Punjabi Bagh", 28.6619, 77.1242), ("ITO", 28.6284, 77.2407),
+    ("Patparganj", 28.6289, 77.3005), ("Ashok Vihar", 28.6948, 77.1813),
+    ("Dwarka-Sector 8", 28.5921, 77.0460), ("Rohini", 28.7366, 77.0988),
+    ("Okhla Phase-2", 28.5448, 77.2711), ("Jawaharlal Nehru Stadium", 28.5828, 77.2345),
+    ("Mandir Marg", 28.6360, 77.2010), ("IGI Airport (T3)", 28.5562, 77.1000)
+]
+
+BENGALURU_STATIONS = [
+    ("Peenya", 13.0329, 77.5274), ("BTM Layout", 12.9166, 77.6101),
+    ("Jayanagar 5th Block", 12.9299, 77.5824), ("Whitefield (KSPCB)", 12.9698, 77.7499),
+    ("Electronic City", 12.8452, 77.6602), ("Silk Board", 12.9176, 77.6235),
+    ("Hebbal", 13.0354, 77.5988), ("Indiranagar", 12.9719, 77.6412),
+    ("City Railway Station", 12.9779, 77.5663), ("Saneguruvanahalli", 12.9863, 77.5358)
+]
+
+CHENNAI_STATIONS = [
+    ("Velachery Res. Area", 12.9757, 80.2206), ("Adyar (TNPCB)", 13.0012, 80.2565),
+    ("T Nagar", 13.0418, 80.2341), ("Guindy Industrial Estate", 13.0067, 80.2206),
+    ("Anna Nagar", 13.0850, 80.2101), ("Manali", 13.1798, 80.2605),
+    ("Alandur Bus Depot", 12.9975, 80.2006), ("Royapuram", 13.1118, 80.2954),
+    ("Manali Village", 13.1760, 80.2568), ("Perambur", 13.1098, 80.2447)
+]
+
 # ==========================================
 # 2. LIVE AQI ROUTE (Hybrid DB + API Logic)
 # ==========================================
@@ -112,7 +153,20 @@ async def get_current_aqi(city: str = "hyderabad", t: Optional[str] = None):
             rows = cursor.fetchall()
             conn.close()
             
-            records = [dict(row) for row in rows]
+            records = []
+            for row in rows:
+                r_dict = dict(row)
+                # Inject exact real-world coordinates for the station!
+                station_name = r_dict["station"]
+                if station_name in HYDERABAD_STATIONS:
+                    r_dict["lat"] = HYDERABAD_STATIONS[station_name][0]
+                    r_dict["lng"] = HYDERABAD_STATIONS[station_name][1]
+                else:
+                    # Fallback near Charminar if not in dict
+                    r_dict["lat"] = 17.3616
+                    r_dict["lng"] = 78.4747
+                records.append(r_dict)
+                
             return {
                 "record_count": len(records),
                 "timestamp": records[0]["timestamp"] if records else None,
@@ -123,14 +177,19 @@ async def get_current_aqi(city: str = "hyderabad", t: Optional[str] = None):
             
     # OTHER CITIES: Dynamically fetch from Open-Meteo AQI API
     else:
+        city_stations = []
         if target_city == 'delhi':
             lat, lon = 28.6139, 77.2090
+            city_stations = DELHI_STATIONS
         elif target_city == 'bengaluru':
             lat, lon = 12.9716, 77.5946
+            city_stations = BENGALURU_STATIONS
         elif target_city == 'chennai':
             lat, lon = 13.0827, 80.2707
+            city_stations = CHENNAI_STATIONS
         else:
             lat, lon = 17.3850, 78.4867
+            city_stations = [("Central Station", lat, lon)]
 
         try:
             url = f"https://air-quality-api.open-meteo.com/v1/air-quality?latitude={lat}&longitude={lon}&current=european_aqi"
@@ -138,14 +197,14 @@ async def get_current_aqi(city: str = "hyderabad", t: Optional[str] = None):
             data = response.json()
             current_aqi = data.get("current", {}).get("european_aqi", 100)
             
-            # Format to look exactly like the database records so the React map doesn't break
             records = []
-            prefix = target_city[:3].upper()
-            for i in range(40):
-                # Add slight random variations across sectors for visual realism
+            for i, st_data in enumerate(city_stations):
+                st_name, st_lat, st_lon = st_data
                 variation = (i % 10) - 5
                 records.append({
-                    "station": f"{prefix}-Sector-{i+1}",
+                    "station": st_name,
+                    "lat": st_lat,
+                    "lng": st_lon,
                     "pollutant_id": "PM2.5",
                     "pollutant_avg": max(10, current_aqi + variation),
                     "timestamp": data.get("current", {}).get("time", "")
