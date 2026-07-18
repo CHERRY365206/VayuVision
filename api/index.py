@@ -384,7 +384,11 @@ def get_health_advisory(city: str = "hyderabad", aqi: int = 150):
 def get_source_attribution(city: str = "hyderabad", aqi: int = 150, wind: float = 0, time: str = "00:00"):
     """Uses LLM to perform real-time Geospatial Pollution Source Attribution."""
     
-    if not GEMINI_API_KEY or GEMINI_API_KEY == 'your_gemini_api_key_here':
+    # Dynamically reload .env so it works immediately without restarting the server locally
+    load_dotenv(os.path.join(BASE_DIR, ".env"), override=True)
+    current_key = os.environ.get("GEMINI_API_KEY", "").strip()
+    
+    if not current_key or current_key == 'your_gemini_api_key_here':
         # Fallback if no API key is provided
         return {
             "dominant_source": "API Key Required",
@@ -417,7 +421,7 @@ def get_source_attribution(city: str = "hyderabad", aqi: int = 150, wind: float 
     """
     
     try:
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={GEMINI_API_KEY}"
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={current_key}"
         headers = {"Content-Type": "application/json"}
         payload = {
             "contents": [{"parts": [{"text": prompt}]}]
