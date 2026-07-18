@@ -13,8 +13,9 @@ import requests
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Load environment variables (fails silently on Vercel if missing)
+load_dotenv(os.path.join(BASE_DIR, "vayuvision.env"))
 load_dotenv(os.path.join(BASE_DIR, ".env"))
-GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "").strip()
 app = FastAPI(
     title="VayuVision Core API Engine",
     description="Backend microservice delivering real-time AQI feeds, weather arrays, and satellite anomalies.",
@@ -385,6 +386,7 @@ def get_source_attribution(city: str = "hyderabad", aqi: int = 150, wind: float 
     """Uses LLM to perform real-time Geospatial Pollution Source Attribution."""
     
     # Dynamically reload .env so it works immediately without restarting the server locally
+    load_dotenv(os.path.join(BASE_DIR, "vayuvision.env"), override=True)
     load_dotenv(os.path.join(BASE_DIR, ".env"), override=True)
     current_key = os.environ.get("GEMINI_API_KEY", "").strip()
     
@@ -421,7 +423,7 @@ def get_source_attribution(city: str = "hyderabad", aqi: int = 150, wind: float 
     """
     
     try:
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={current_key}"
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key={current_key}"
         headers = {"Content-Type": "application/json"}
         payload = {
             "contents": [{"parts": [{"text": prompt}]}]
