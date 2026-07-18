@@ -388,7 +388,7 @@ def get_source_attribution(city: str = "hyderabad", aqi: int = 150, wind: float 
     # Dynamically reload .env so it works immediately without restarting the server locally
     load_dotenv(os.path.join(BASE_DIR, "vayuvision.env"), override=True)
     load_dotenv(os.path.join(BASE_DIR, ".env"), override=True)
-    current_key = os.environ.get("GEMINI_API_KEY", "").strip()
+    current_key = os.environ.get("GEMINI_API_KEY_ATTRIBUTION", "").strip()
     
     if not current_key or current_key == 'your_gemini_api_key_here':
         # Fallback if no API key is provided
@@ -456,7 +456,7 @@ def get_source_attribution(city: str = "hyderabad", aqi: int = 150, wind: float 
 def get_predictive_forecast(city: str = "hyderabad", current_aqi: int = 150):
     load_dotenv(os.path.join(BASE_DIR, "vayuvision.env"), override=True)
     load_dotenv(os.path.join(BASE_DIR, ".env"), override=True)
-    key = os.environ.get("GEMINI_API_KEY_FORECAST") or os.environ.get("GEMINI_API_KEY", "").strip()
+    key = os.environ.get("GEMINI_API_KEY_FORECAST", "").strip()
     
     if not key or key == 'your_gemini_api_key_here':
         return {"schedule": [
@@ -509,7 +509,7 @@ def get_predictive_forecast(city: str = "hyderabad", current_aqi: int = 150):
 def get_enforcement_agent(city: str = "hyderabad", current_aqi: int = 150):
     load_dotenv(os.path.join(BASE_DIR, "vayuvision.env"), override=True)
     load_dotenv(os.path.join(BASE_DIR, ".env"), override=True)
-    key = os.environ.get("GEMINI_API_KEY_ENFORCEMENT") or os.environ.get("GEMINI_API_KEY", "").strip()
+    key = os.environ.get("GEMINI_API_KEY_ENFORCEMENT", "").strip()
     
     if not key or key == 'your_gemini_api_key_here':
         return {"targets": [
