@@ -22,6 +22,19 @@ app = FastAPI(
     version="1.0.0"
 )
 
+@app.get("/api/debug-keys")
+def get_debug_keys():
+    import os
+    from dotenv import load_dotenv
+    load_dotenv(os.path.join(BASE_DIR, "vayuvision.env"), override=True)
+    load_dotenv(os.path.join(BASE_DIR, ".env"), override=True)
+    return {
+        "attribution": os.environ.get("GEMINI_API_KEY_ATTRIBUTION", "NOT_FOUND")[:10],
+        "forecast": os.environ.get("GEMINI_API_KEY_FORECAST", "NOT_FOUND")[:10],
+        "enforcement": os.environ.get("GEMINI_API_KEY_ENFORCEMENT", "NOT_FOUND")[:10],
+        "fallback": os.environ.get("GEMINI_API_KEY", "NOT_FOUND")[:10]
+    }
+
 # Crucial for Hackathons: Enable Cross-Origin Resource Sharing (CORS)
 app.add_middleware(
     CORSMiddleware,

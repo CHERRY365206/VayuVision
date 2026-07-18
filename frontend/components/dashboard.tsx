@@ -7,7 +7,7 @@ import { OverlayModals } from '@/components/overlay-modals'
 import { LayerControls } from '@/components/layer-controls'
 import { TimelineScrubber } from '@/components/timeline-scrubber'
 import { EconomicWidget } from '@/components/economic-widget'
-import { DroneAlert } from '@/components/drone-alert'
+
 import { FlaskConical, Loader2, MapPin } from 'lucide-react' // Added MapPin
 
 import { fetchLiveWeatherData, fetchLiveAqiData, fetchForecastData } from '@/lib/vayu-data'
@@ -93,7 +93,7 @@ export function Dashboard({ entering }: { entering: boolean }) {
 
   const currentAqi = activeForecast[hour]?.predicted_aqi || 40
   const currentWind = liveWeather?.wind_speed_m_s || 3.1
-  const isAlertNeeded = currentAqi > 120
+
 
   const handleExportPDF = async () => {
     setIsExporting(true)
@@ -156,7 +156,7 @@ export function Dashboard({ entering }: { entering: boolean }) {
         currentTime={liveWeather?.timestamp || '00:00'}
       />
 
-      <div className="glass absolute left-1/2 top-20 z-30 flex -translate-x-1/2 items-center gap-4 rounded-full px-6 py-2 text-xs font-mono font-medium shadow-lg backdrop-blur-md border border-white/10 transition-all">
+      <div className="glass absolute left-1/2 top-24 z-30 flex -translate-x-1/2 items-center gap-4 rounded-full px-6 py-2 text-xs font-mono font-medium shadow-lg backdrop-blur-md border border-white/10 transition-all">
         
         {/* NEW: City Selection Dropdown */}
         <div className="flex items-center gap-2 pr-4 border-r border-white/20">
@@ -201,7 +201,7 @@ export function Dashboard({ entering }: { entering: boolean }) {
         <NavPill active={nav} onChange={setNav} />
       </div>
 
-      <div className="absolute right-4 top-4 z-20 flex flex-col gap-2 items-end">
+      <div className="absolute right-4 top-24 z-20 flex flex-col gap-2 items-end">
         <LayerControls layers={layers} onToggle={toggle} />
         
         <button 
@@ -222,11 +222,6 @@ export function Dashboard({ entering }: { entering: boolean }) {
         <TimelineScrubber hour={hour} onChange={setHour} playing={playing} onTogglePlay={() => setPlaying((p) => !p)} forecastData={activeForecast} />
       </div>
 
-      {isAlertNeeded && (
-        <div className="absolute right-4 top-[316px] z-30">
-          <DroneAlert hour={hour} aqi={currentAqi} wind={currentWind} onClose={() => setHour(hour > 0 ? 0 : 10)} />
-        </div>
-      )}
     </div>
   )
 }
