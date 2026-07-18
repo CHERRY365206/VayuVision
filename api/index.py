@@ -5,18 +5,16 @@ import requests
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from typing import Optional
-import google.generativeai as genai
 from dotenv import load_dotenv
 import json
+import requests
 
 # Resolve paths
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-# Load environment variables
+# Load environment variables (fails silently on Vercel if missing)
 load_dotenv(os.path.join(BASE_DIR, ".env"))
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
-if GEMINI_API_KEY and GEMINI_API_KEY != 'your_gemini_api_key_here':
-    genai.configure(api_key=GEMINI_API_KEY)
 app = FastAPI(
     title="VayuVision Core API Engine",
     description="Backend microservice delivering real-time AQI feeds, weather arrays, and satellite anomalies.",
@@ -419,9 +417,18 @@ def get_source_attribution(city: str = "hyderabad", aqi: int = 150, wind: float 
     """
     
     try:
-        model = genai.GenerativeModel('gemini-1.5-flash')
-        response = model.generate_content(prompt)
-        text = response.text.strip()
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={GEMINI_API_KEY}"
+        headers = {"Content-Type": "application/json"}
+        payload = {
+            "contents": [{"parts": [{"text": prompt}]}]
+        }
+        
+        response = requests.post(url, headers=headers, json=payload)
+        response_data = response.json()
+        
+        # Parse the text response from the raw payload
+        text = response_data.get("candidates", [{}])[0].get("content", {}).get("parts", [{}])[0].get("text", "")
+        text = text.strip()
         
         # Clean up in case the model included markdown blocks despite instructions
         if text.startswith("```json"):
