@@ -1,12 +1,13 @@
 'use client'
 
-import { Map, CloudSun, Settings2, Info, ShieldAlert } from 'lucide-react'
+import { Map, CloudSun, Settings2, Info, ShieldAlert, Activity } from 'lucide-react'
 
 const ITEMS = [
   { id: 'map', label: 'Live Map', icon: Map },
   { id: 'weather', label: 'Weather Forecasts', icon: CloudSun },
   { id: 'settings', label: 'System Settings', icon: Settings2 },
   { id: 'advisory', label: 'Citizen Advisory', icon: ShieldAlert },
+  { id: 'attribution', label: 'Source Attribution', icon: Activity },
   { id: 'about', label: 'About Vayu', icon: Info },
 ] as const
 

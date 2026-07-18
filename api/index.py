@@ -5,8 +5,18 @@ import requests
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from typing import Optional
+import google.generativeai as genai
+from dotenv import load_dotenv
+import json
 
-# Initialize FastAPI application
+# Resolve paths
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+# Load environment variables
+load_dotenv(os.path.join(BASE_DIR, ".env"))
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
+if GEMINI_API_KEY and GEMINI_API_KEY != 'your_gemini_api_key_here':
+    genai.configure(api_key=GEMINI_API_KEY)
 app = FastAPI(
     title="VayuVision Core API Engine",
     description="Backend microservice delivering real-time AQI feeds, weather arrays, and satellite anomalies.",
@@ -368,6 +378,63 @@ def get_health_advisory(city: str = "hyderabad", aqi: int = 150):
             "regional_ivr_script": city_data["ivr_script"]
         }
     }
+
+# ==========================================
+# 6. AI SOURCE ATTRIBUTION ROUTE
+# ==========================================
+@app.get("/api/source-attribution")
+def get_source_attribution(city: str = "hyderabad", aqi: int = 150, wind: float = 0, time: str = "00:00"):
+    """Uses LLM to perform real-time Geospatial Pollution Source Attribution."""
+    
+    if not GEMINI_API_KEY or GEMINI_API_KEY == 'your_gemini_api_key_here':
+        # Fallback if no API key is provided
+        return {
+            "dominant_source": "API Key Required",
+            "scores": {"Traffic": 0, "Industrial": 0, "Construction": 0, "Thermal": 0},
+            "analysis": "Please add a valid GEMINI_API_KEY to your .env file to enable the AI Attribution Engine."
+        }
+        
+    prompt = f"""
+    You are an advanced environmental AI tasked with Geospatial Pollution Source Attribution.
+    Analyze the following real-time metrics for a city and return a strict JSON object with a breakdown of pollution sources.
+    
+    Data:
+    - City: {city}
+    - Current AQI: {aqi}
+    - Wind Speed: {wind} m/s
+    - Local Time: {time}
+    
+    Respond ONLY with a valid JSON object exactly matching this schema:
+    {{
+        "dominant_source": "string (e.g. Vehicular Traffic, Industrial Emissions)",
+        "scores": {{
+            "Traffic": number (0-100),
+            "Industrial": number (0-100),
+            "Construction": number (0-100),
+            "Thermal": number (0-100)
+        }},
+        "analysis": "A 2-3 sentence technical analysis explaining the source attribution based on the provided metrics and the city's known geography."
+    }}
+    Make sure the scores add up to 100. DO NOT include markdown formatting like ```json.
+    """
+    
+    try:
+        model = genai.GenerativeModel('gemini-1.5-flash')
+        response = model.generate_content(prompt)
+        text = response.text.strip()
+        
+        # Clean up in case the model included markdown blocks despite instructions
+        if text.startswith("```json"):
+            text = text.replace("```json", "", 1)
+        if text.startswith("```"):
+            text = text.replace("```", "", 1)
+        if text.endswith("```"):
+            text = text.rsplit("```", 1)[0]
+            
+        return json.loads(text.strip())
+    except Exception as e:
+        print(f"\n❌ AI ATTRIBUTION FAILED: {str(e)}\n")
+        raise HTTPException(status_code=500, detail="AI Analysis failed to generate.")
 
 if __name__ == "__main__":
     import uvicorn

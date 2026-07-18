@@ -273,3 +273,20 @@ export async function fetchHealthAdvisory(city: string, aqi: number) {
     return null; 
   }
 }
+
+export async function fetchSourceAttribution(city: string, aqi: number, wind: number, time: string) {
+  try {
+    const timestamp = new Date().getTime();
+    // Using encodeURIComponent for safety
+    const response = await fetch(`${BASE_URL}/api/source-attribution?t=${timestamp}&city=${encodeURIComponent(city)}&aqi=${aqi}&wind=${wind}&time=${encodeURIComponent(time)}`, {
+      cache: 'no-store'
+    });
+    
+    if (!response.ok) return null;
+    
+    return await response.json();
+  } catch (error) {
+    console.error(`Source Attribution API Error for ${city}:`, error);
+    return null; 
+  }
+}

@@ -1,12 +1,29 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { X, Code, Mail, Cpu, Database, Server, ShieldAlert, Loader2, Bot, Megaphone, Smartphone } from 'lucide-react'
-import { fetchHealthAdvisory } from '@/lib/vayu-data'
+import { X, Code, Mail, Cpu, Database, Server, ShieldAlert, Loader2, Bot, Megaphone, Smartphone, Activity } from 'lucide-react'
+import { fetchHealthAdvisory, fetchSourceAttribution } from '@/lib/vayu-data'
 
-export function OverlayModals({ active, onClose, activeCity = 'hyderabad', currentAqi = 40 }: { active: string; onClose: () => void; activeCity?: string; currentAqi?: number }) {
+export function OverlayModals({ 
+  active, 
+  onClose, 
+  activeCity = 'hyderabad', 
+  currentAqi = 40,
+  currentWind = 0,
+  currentTime = "00:00"
+}: { 
+  active: string; 
+  onClose: () => void; 
+  activeCity?: string; 
+  currentAqi?: number;
+  currentWind?: number;
+  currentTime?: string;
+}) {
   const [advisoryData, setAdvisoryData] = useState<any>(null)
   const [loadingAdvisory, setLoadingAdvisory] = useState(false)
+  
+  const [attributionData, setAttributionData] = useState<any>(null)
+  const [loadingAttribution, setLoadingAttribution] = useState(false)
 
   useEffect(() => {
     if (active === 'advisory') {
@@ -16,7 +33,15 @@ export function OverlayModals({ active, onClose, activeCity = 'hyderabad', curre
         setLoadingAdvisory(false)
       })
     }
-  }, [active, activeCity, currentAqi])
+    
+    if (active === 'attribution') {
+      setLoadingAttribution(true)
+      fetchSourceAttribution(activeCity, currentAqi, currentWind, currentTime).then(data => {
+        setAttributionData(data)
+        setLoadingAttribution(false)
+      })
+    }
+  }, [active, activeCity, currentAqi, currentWind, currentTime])
 
   if (active === 'map') return null // Hide when viewing the map
 
@@ -87,7 +112,60 @@ export function OverlayModals({ active, onClose, activeCity = 'hyderabad', curre
           </div>
         )}
 
-        {/* 1. WEATHER FORECASTS MODAL */}
+        {/* 1. SOURCE ATTRIBUTION MODAL */}
+        {active === 'attribution' && (
+          <div className="space-y-6">
+            <h2 className="text-2xl font-display font-bold text-foreground flex items-center gap-3">
+              <Activity className="size-6 text-[oklch(0.9_0.14_200)]" />
+              AI Source Apportionment
+            </h2>
+            <p className="text-muted-foreground text-sm leading-relaxed">
+              Real-time geospatial attribution of PM2.5 pollution sources, dynamically inferred by our Large Language Model using live weather, wind dispersal, and AQI telemetry.
+            </p>
+            
+            {loadingAttribution ? (
+              <div className="flex flex-col items-center justify-center p-8 space-y-4">
+                <Loader2 className="size-8 text-[oklch(0.9_0.14_200)] animate-spin" />
+                <p className="text-sm font-mono text-muted-foreground">AI Agent analyzing spatial telemetry...</p>
+              </div>
+            ) : attributionData ? (
+              <div className="space-y-6">
+                <div className="bg-black/20 p-4 rounded-xl border border-[oklch(0.9_0.14_200_/_0.2)]">
+                  <div className="text-[oklch(0.9_0.14_200)] text-xs font-mono mb-2 uppercase tracking-wider flex items-center gap-2">
+                    <Bot className="size-4" /> AI Analysis
+                  </div>
+                  <p className="text-sm text-foreground leading-relaxed">
+                    {attributionData.analysis}
+                  </p>
+                </div>
+                
+                <div className="space-y-4">
+                  <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Confidence Scores</h3>
+                  {Object.entries(attributionData.scores || {}).map(([source, score]) => (
+                    <div key={source} className="space-y-1">
+                      <div className="flex justify-between text-xs font-mono">
+                        <span className="text-foreground uppercase">{source}</span>
+                        <span className="text-cyan-400">{Number(score).toFixed(1)}%</span>
+                      </div>
+                      <div className="h-2 w-full bg-slate-900 rounded-full overflow-hidden">
+                        <div 
+                          className="h-full bg-gradient-to-r from-[oklch(0.85_0.16_200)] to-[oklch(0.9_0.14_200)]" 
+                          style={{ width: `${score}%`, transition: 'width 1s ease-out' }}
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <div className="text-red-400 text-sm font-mono text-center p-4">
+                Failed to connect to the AI Attribution Engine. Check API Key.
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* 2. WEATHER FORECASTS MODAL */}
         {active === 'weather' && (
           <div className="space-y-6">
             <h2 className="text-2xl font-display font-bold text-foreground flex items-center gap-3">

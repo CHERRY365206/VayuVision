@@ -147,7 +147,14 @@ export function Dashboard({ entering }: { entering: boolean }) {
         activeCity={activeCity}
       />
       
-      <OverlayModals active={nav} onClose={() => setNav('map')} activeCity={activeCity} currentAqi={currentAqi} />
+      <OverlayModals 
+        active={nav} 
+        onClose={() => setNav('map')} 
+        activeCity={activeCity} 
+        currentAqi={currentAqi} 
+        currentWind={liveWeather?.wind_speed_m_s || 0}
+        currentTime={liveWeather?.timestamp || '00:00'}
+      />
 
       <div className="glass absolute left-1/2 top-20 z-30 flex -translate-x-1/2 items-center gap-4 rounded-full px-6 py-2 text-xs font-mono font-medium shadow-lg backdrop-blur-md border border-white/10 transition-all">
         
