@@ -290,3 +290,42 @@ export async function fetchSourceAttribution(city: string, aqi: number, wind: nu
     return null; 
   }
 }
+
+export async function fetchPredictiveForecast(city: string, currentAqi: number) {
+  try {
+    const response = await fetch(`${BASE_URL}/api/predictive-forecast?city=${encodeURIComponent(city)}&current_aqi=${currentAqi}`, {
+      cache: 'no-store'
+    });
+    if (!response.ok) return null;
+    return await response.json();
+  } catch (error) {
+    console.error(`Predictive Forecast Error for ${city}:`, error);
+    return null;
+  }
+}
+
+export async function fetchEnforcementAgent(city: string, currentAqi: number) {
+  try {
+    const response = await fetch(`${BASE_URL}/api/enforcement-agent?city=${encodeURIComponent(city)}&current_aqi=${currentAqi}`, {
+      cache: 'no-store'
+    });
+    if (!response.ok) return null;
+    return await response.json();
+  } catch (error) {
+    console.error(`Enforcement Agent Error for ${city}:`, error);
+    return null;
+  }
+}
+
+export async function fetchMultiCityCompare() {
+  try {
+    const response = await fetch(`${BASE_URL}/api/multi-city-compare`, {
+      cache: 'no-store'
+    });
+    if (!response.ok) return null;
+    return await response.json();
+  } catch (error) {
+    console.error(`Multi-City Compare Error:`, error);
+    return null;
+  }
+}

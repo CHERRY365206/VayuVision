@@ -449,6 +449,139 @@ def get_source_attribution(city: str = "hyderabad", aqi: int = 150, wind: float 
         print(f"\n❌ AI ATTRIBUTION FAILED: {str(e)}\n")
         raise HTTPException(status_code=500, detail="AI Analysis failed to generate.")
 
+# ==========================================
+# 7. PREDICTIVE FORECASTING AGENT
+# ==========================================
+@app.get("/api/predictive-forecast")
+def get_predictive_forecast(city: str = "hyderabad", current_aqi: int = 150):
+    load_dotenv(os.path.join(BASE_DIR, "vayuvision.env"), override=True)
+    load_dotenv(os.path.join(BASE_DIR, ".env"), override=True)
+    key = os.environ.get("GEMINI_API_KEY_FORECAST") or os.environ.get("GEMINI_API_KEY", "").strip()
+    
+    if not key or key == 'your_gemini_api_key_here':
+        return {"schedule": [
+            {"time": "+24h", "predicted_aqi": 0, "action": "API Key Required for Forecast"},
+            {"time": "+48h", "predicted_aqi": 0, "action": "Add GEMINI_API_KEY_FORECAST"}
+        ]}
+        
+    prompt = f"""
+    You are a Hyperlocal Predictive AQI Forecasting Agent.
+    City: {city}, Current AQI: {current_aqi}.
+    Generate a 72-hour forecast and intervention schedule.
+    Respond ONLY with a valid JSON object matching this schema:
+    {{
+        "schedule": [
+            {{
+                "time": "+24h",
+                "predicted_aqi": number,
+                "action": "string (e.g., Issue health advisory, spray water on arterial roads)"
+            }},
+            {{
+                "time": "+48h",
+                "predicted_aqi": number,
+                "action": "string"
+            }},
+            {{
+                "time": "+72h",
+                "predicted_aqi": number,
+                "action": "string"
+            }}
+        ]
+    }}
+    """
+    try:
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key={key}"
+        payload = {"contents": [{"parts": [{"text": prompt}]}]}
+        res = requests.post(url, headers={"Content-Type": "application/json"}, json=payload).json()
+        text = res.get("candidates", [{}])[0].get("content", {}).get("parts", [{}])[0].get("text", "")
+        if text.startswith("```json"): text = text.replace("```json", "", 1)
+        if text.startswith("```"): text = text.replace("```", "", 1)
+        if text.endswith("```"): text = text.rsplit("```", 1)[0]
+        return json.loads(text.strip())
+    except Exception as e:
+        print(f"❌ FORECAST FAILED: {str(e)}")
+        raise HTTPException(status_code=500, detail="Forecast failed.")
+
+# ==========================================
+# 8. ENFORCEMENT INTELLIGENCE AGENT
+# ==========================================
+@app.get("/api/enforcement-agent")
+def get_enforcement_agent(city: str = "hyderabad", current_aqi: int = 150):
+    load_dotenv(os.path.join(BASE_DIR, "vayuvision.env"), override=True)
+    load_dotenv(os.path.join(BASE_DIR, ".env"), override=True)
+    key = os.environ.get("GEMINI_API_KEY_ENFORCEMENT") or os.environ.get("GEMINI_API_KEY", "").strip()
+    
+    if not key or key == 'your_gemini_api_key_here':
+        return {"targets": [
+            {"target": "API Key Required", "confidence": 0, "action": "Add GEMINI_API_KEY_ENFORCEMENT to .env"}
+        ]}
+        
+    prompt = f"""
+    You are an Enforcement Intelligence & Prioritisation Agent for {city} (Current AQI: {current_aqi}).
+    Correlate pollution hotspot data with registered emission sources and generate enforcement actions.
+    Respond ONLY with a valid JSON object matching this schema:
+    {{
+        "targets": [
+            {{
+                "target": "string (e.g. Industrial Zone A, Highway 44 Construction)",
+                "confidence": number (0-100),
+                "action": "string (e.g. Dispatch municipal inspection team, halt construction)"
+            }},
+            {{
+                "target": "string",
+                "confidence": number,
+                "action": "string"
+            }},
+            {{
+                "target": "string",
+                "confidence": number,
+                "action": "string"
+            }}
+        ]
+    }}
+    """
+    try:
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key={key}"
+        payload = {"contents": [{"parts": [{"text": prompt}]}]}
+        res = requests.post(url, headers={"Content-Type": "application/json"}, json=payload).json()
+        text = res.get("candidates", [{}])[0].get("content", {}).get("parts", [{}])[0].get("text", "")
+        if text.startswith("```json"): text = text.replace("```json", "", 1)
+        if text.startswith("```"): text = text.replace("```", "", 1)
+        if text.endswith("```"): text = text.rsplit("```", 1)[0]
+        return json.loads(text.strip())
+    except Exception as e:
+        print(f"❌ ENFORCEMENT FAILED: {str(e)}")
+        raise HTTPException(status_code=500, detail="Enforcement failed.")
+
+# ==========================================
+# 9. MULTI-CITY COMPARE
+# ==========================================
+@app.get("/api/multi-city-compare")
+async def get_multi_city_compare():
+    cities = ["hyderabad", "delhi", "bengaluru", "chennai"]
+    results = []
+    for c in cities:
+        try:
+            weather = get_current_weather(city=c)
+            aqi = await get_current_aqi(city=c)
+            
+            # get_current_aqi returns a dict like {"records": [{"pollutant_avg": 42}, ...]}
+            # we need to extract the average AQI for the city
+            aqi_val = 0
+            if "records" in aqi and len(aqi["records"]) > 0:
+                aqi_val = sum(r.get("pollutant_avg", 0) for r in aqi["records"]) / len(aqi["records"])
+                
+            results.append({
+                "city": c.capitalize(),
+                "aqi": round(aqi_val, 1),
+                "temperature_c": weather.get("temperature_c", 0),
+                "wind_speed_m_s": weather.get("wind_speed_m_s", 0)
+            })
+        except Exception as e:
+            print(f"Error fetching {c}: {e}")
+            pass
+    return {"comparison": results}
+
 if __name__ == "__main__":
     import uvicorn
     # Launch the server on local port 8000

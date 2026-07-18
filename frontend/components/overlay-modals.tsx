@@ -1,8 +1,8 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { X, Code, Mail, Cpu, Database, Server, ShieldAlert, Loader2, Bot, Megaphone, Smartphone, Activity } from 'lucide-react'
-import { fetchHealthAdvisory, fetchSourceAttribution } from '@/lib/vayu-data'
+import { X, Code, Mail, Cpu, Database, Server, ShieldAlert, Loader2, Bot, Megaphone, Smartphone, Activity, CalendarClock, Target, BarChart2 } from 'lucide-react'
+import { fetchHealthAdvisory, fetchSourceAttribution, fetchPredictiveForecast, fetchEnforcementAgent, fetchMultiCityCompare } from '@/lib/vayu-data'
 
 export function OverlayModals({ 
   active, 
@@ -25,6 +25,15 @@ export function OverlayModals({
   const [attributionData, setAttributionData] = useState<any>(null)
   const [loadingAttribution, setLoadingAttribution] = useState(false)
 
+  const [forecastData, setForecastData] = useState<any>(null)
+  const [loadingForecast, setLoadingForecast] = useState(false)
+
+  const [enforcementData, setEnforcementData] = useState<any>(null)
+  const [loadingEnforcement, setLoadingEnforcement] = useState(false)
+
+  const [compareData, setCompareData] = useState<any>(null)
+  const [loadingCompare, setLoadingCompare] = useState(false)
+
   useEffect(() => {
     if (active === 'advisory') {
       setLoadingAdvisory(true)
@@ -39,6 +48,30 @@ export function OverlayModals({
       fetchSourceAttribution(activeCity, currentAqi, currentWind, currentTime).then(data => {
         setAttributionData(data)
         setLoadingAttribution(false)
+      })
+    }
+    
+    if (active === 'forecast') {
+      setLoadingForecast(true)
+      fetchPredictiveForecast(activeCity, currentAqi).then(data => {
+        setForecastData(data)
+        setLoadingForecast(false)
+      })
+    }
+    
+    if (active === 'enforcement') {
+      setLoadingEnforcement(true)
+      fetchEnforcementAgent(activeCity, currentAqi).then(data => {
+        setEnforcementData(data)
+        setLoadingEnforcement(false)
+      })
+    }
+    
+    if (active === 'compare') {
+      setLoadingCompare(true)
+      fetchMultiCityCompare().then(data => {
+        setCompareData(data)
+        setLoadingCompare(false)
       })
     }
   }, [active, activeCity, currentAqi, currentWind, currentTime])
@@ -230,6 +263,124 @@ export function OverlayModals({
                 View Source Code
               </a>
             </div>
+          </div>
+        )}
+
+        {/* NEW 1. PREDICTIVE FORECAST MODAL */}
+        {active === 'forecast' && (
+          <div className="space-y-6">
+            <h2 className="text-2xl font-display font-bold text-foreground flex items-center gap-3">
+              <CalendarClock className="size-6 text-emerald-400" />
+              Predictive AQI Forecasting
+            </h2>
+            <p className="text-muted-foreground text-sm leading-relaxed">
+              AI-generated 72-hour forecasting mapping expected air quality indices against meteorological trends.
+            </p>
+            
+            {loadingForecast ? (
+              <div className="flex flex-col items-center justify-center p-8 space-y-4">
+                <Loader2 className="size-8 text-emerald-400 animate-spin" />
+                <p className="text-sm font-mono text-muted-foreground">Simulating temporal shifts...</p>
+              </div>
+            ) : forecastData?.schedule ? (
+              <div className="space-y-4">
+                {forecastData.schedule.map((item: any, i: number) => (
+                  <div key={i} className="bg-black/20 p-4 rounded-xl border border-emerald-500/20 flex gap-4 items-center">
+                    <div className="bg-emerald-500/10 text-emerald-400 font-mono text-lg font-bold px-3 py-2 rounded-lg border border-emerald-500/20">
+                      {item.time}
+                    </div>
+                    <div className="flex-1">
+                      <div className="text-xs font-mono text-muted-foreground uppercase tracking-wider mb-1">Predicted AQI: {item.predicted_aqi}</div>
+                      <div className="text-sm text-foreground font-medium">{item.action}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-red-400 text-sm font-mono text-center p-4">Failed to connect to Forecasting Engine.</div>
+            )}
+          </div>
+        )}
+
+        {/* NEW 2. ENFORCEMENT INTELLIGENCE MODAL */}
+        {active === 'enforcement' && (
+          <div className="space-y-6">
+            <h2 className="text-2xl font-display font-bold text-foreground flex items-center gap-3">
+              <Target className="size-6 text-rose-500" />
+              Enforcement Intelligence
+            </h2>
+            <p className="text-muted-foreground text-sm leading-relaxed">
+              Correlating pollution hotspots with registered emission sources to generate prioritized, evidence-backed enforcement action recommendations.
+            </p>
+            
+            {loadingEnforcement ? (
+              <div className="flex flex-col items-center justify-center p-8 space-y-4">
+                <Loader2 className="size-8 text-rose-500 animate-spin" />
+                <p className="text-sm font-mono text-muted-foreground">Scanning emission registers...</p>
+              </div>
+            ) : enforcementData?.targets ? (
+              <div className="space-y-4">
+                {enforcementData.targets.map((item: any, i: number) => (
+                  <div key={i} className="bg-rose-950/20 p-4 rounded-xl border border-rose-500/30 relative overflow-hidden">
+                    <div className="absolute top-0 left-0 w-1 h-full bg-rose-500" />
+                    <div className="flex justify-between items-start mb-2 pl-2">
+                      <div className="font-bold text-rose-100">{item.target}</div>
+                      <div className="text-rose-400 font-mono text-xs border border-rose-500/30 px-2 py-1 rounded bg-rose-950/40">
+                        {item.confidence}% CONFIDENCE
+                      </div>
+                    </div>
+                    <div className="text-sm text-rose-200/70 pl-2">
+                      <span className="text-rose-400 font-mono text-xs uppercase tracking-wider mr-2">Action:</span>
+                      {item.action}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-red-400 text-sm font-mono text-center p-4">Failed to connect to Enforcement Engine.</div>
+            )}
+          </div>
+        )}
+
+        {/* NEW 3. MULTI-CITY COMPARE MODAL */}
+        {active === 'compare' && (
+          <div className="space-y-6">
+            <h2 className="text-2xl font-display font-bold text-foreground flex items-center gap-3">
+              <BarChart2 className="size-6 text-indigo-400" />
+              Multi-City Intelligence
+            </h2>
+            <p className="text-muted-foreground text-sm leading-relaxed">
+              Cross-comparing air quality trends and telemetry across multiple urban centers simultaneously.
+            </p>
+            
+            {loadingCompare ? (
+              <div className="flex flex-col items-center justify-center p-8 space-y-4">
+                <Loader2 className="size-8 text-indigo-400 animate-spin" />
+                <p className="text-sm font-mono text-muted-foreground">Aggregating national data...</p>
+              </div>
+            ) : compareData?.comparison ? (
+              <div className="space-y-3">
+                {compareData.comparison.map((city: any, i: number) => (
+                  <div key={i} className="grid grid-cols-4 gap-4 items-center bg-black/20 p-3 rounded-xl border border-indigo-500/20">
+                    <div className="font-bold text-indigo-100">{city.city}</div>
+                    <div className="text-sm">
+                      <span className="text-indigo-400 font-mono text-xs block">AQI</span>
+                      <span className="font-bold">{city.aqi}</span>
+                    </div>
+                    <div className="text-sm">
+                      <span className="text-indigo-400 font-mono text-xs block">TEMP</span>
+                      <span className="font-bold">{city.temperature_c}°C</span>
+                    </div>
+                    <div className="text-sm">
+                      <span className="text-indigo-400 font-mono text-xs block">WIND</span>
+                      <span className="font-bold">{city.wind_speed_m_s} m/s</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-red-400 text-sm font-mono text-center p-4">Failed to aggregate city data.</div>
+            )}
           </div>
         )}
 
