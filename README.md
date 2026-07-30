@@ -1,4 +1,4 @@
-# 🌍 VayuVision – Autonomous AI Environmental Command Center
+#  VayuVision – Autonomous AI Environmental Command Center
 
 > An intelligent, hybrid AI-driven environmental command center that shifts urban pollution management from reactive monitoring to proactive mitigation through hyper-local forecasting and targeted enforcement.
 
@@ -6,7 +6,7 @@
 
 ---
 
-## 📖 Overview
+##  Overview
 
 VayuVision is a full-stack, serverless web application developed to empower city administrators and environmental agencies. The platform ingests live meteorological and air quality telemetry, visualizes it on a high-resolution 1km hexagonal geospatial grid, and uses autonomous AI agents to predict, pinpoint, and prescribe actions to stop urban pollution spikes before they happen.
 
@@ -14,7 +14,7 @@ The system follows a **decoupled client-server architecture**, where a highly re
 
 ---
 
-## 🚀 Key Features
+##  Key Features
 
 - 🌍 **High-Resolution Geospatial Dashboard:** 1km hexagonal grid over OpenStreetMap.
 - ⛅ **Meteorological Data Hub:** Live ingestion of Open-Meteo and WAQI telemetry.
@@ -39,7 +39,7 @@ The system follows a **decoupled client-server architecture**, where a highly re
 
 ---
 
-# 🏗️ System Architecture
+#  System Architecture
 
 ```text
                     City Administrator
@@ -64,7 +64,7 @@ The system follows a **decoupled client-server architecture**, where a highly re
 
 ---
 
-# ⚙️ How VayuVision Works
+#  How VayuVision Works
 
 ### 1️⃣ Data Ingestion
 VayuVision constantly polls live meteorological data (wind speed, temperature) and Air Quality Indices from external APIs (Open-Meteo, WAQI).
@@ -83,7 +83,7 @@ The Next.js frontend dynamically renders these insights via interactive glassmor
 
 ---
 
-# 🔧 REST APIs
+#  REST APIs
 
 The backend exposes serverless RESTful APIs for communication between the frontend and the AI intelligence layer. 
 
@@ -97,7 +97,7 @@ Major endpoints include:
 
 ---
 
-# 🤖 Autonomous AI Agents
+#  Autonomous AI Agents
 
 VayuVision doesn't just display data; it acts as an autonomous advisor powered by **Google Gemini**.
 
@@ -105,32 +105,32 @@ Instead of hardcoded rules, our AI Agents utilize **Probabilistic Reasoning**. B
 
 ---
 
-# 📸 Project Preview
+#  Project Preview
 
-## 🏠 Main Command Center Dashboard
+##  Main Command Center Dashboard
 <img width="1445" height="937" alt="Screenshot 2026-07-06 203128" src="https://github.com/CHERRY365206/VayuVision/blob/main/Screenshot%202026-07-30%20214703.png" />
 <img width="1445" height="937" alt="Screenshot 2026-07-06 203128" src="https://github.com/CHERRY365206/VayuVision/blob/main/Screenshot%202026-07-30%20214733.png" />
 
 ---
-## 🎯 AI Source Apportionment
+##  AI Source Apportionment
 <img width="1445" height="937" alt="Screenshot 2026-07-06 203128" src="https://github.com/CHERRY365206/VayuVision/blob/main/AI%20Source%20Apportionment.png" />
 
 ---
-## 🚨 Enforcement Intelligence
+##  Enforcement Intelligence
 <img width="1445" height="937" alt="Screenshot 2026-07-06 203128" src="https://github.com/CHERRY365206/VayuVision/blob/main/Enforcement%20Intelligence.png" />
 
 ---
-## ⏱️ Predictive AQI Forecasting
+##  Predictive AQI Forecasting
 <img width="1445" height="937" alt="Screenshot 2026-07-06 203128" src="https://github.com/CHERRY365206/VayuVision/blob/main/Predictive%20AQI.png" />
 
 ---
-## 📢 Citizen Health Advisory (Multi-Lingual)
+##  Citizen Health Advisory (Multi-Lingual)
 <img width="1445" height="937" alt="Screenshot 2026-07-06 203128" src="https://github.com/CHERRY365206/VayuVision/blob/main/Citizen%20Advisory.png" />
 
 
 ---
 
-# 🎯 Concepts Demonstrated
+#  Concepts Demonstrated
 
 - Hybrid AI Architecture (Deterministic ML + Probabilistic Generative AI)
 - Serverless Full-Stack Web Development
