@@ -108,8 +108,8 @@ Instead of hardcoded rules, our AI Agents utilize **Probabilistic Reasoning**. B
 # 📸 Project Preview
 
 ## 🏠 Main Command Center Dashboard
-<img width="1445" height="937" alt="Screenshot 2026-07-06 203128" src="https://github.com/user-attachments/assets/c9da3b62-583d-4959-9741-6cd940dab61b" />
-<img width="1445" height="937" alt="Screenshot 2026-07-06 203128" src="https://github.com/user-attachments/assets/c9da3b62-583d-4959-9741-6cd940dab61b" />
+<img width="1445" height="937" alt="Screenshot 2026-07-06 203128" src="https://github.com/CHERRY365206/VayuVision/blob/main/Screenshot%202026-07-30%20214703.png" />
+<img width="1445" height="937" alt="Screenshot 2026-07-06 203128" src="https://github.com/CHERRY365206/VayuVision/blob/main/Screenshot%202026-07-30%20214733.png" />
 
 ---
 ## 🎯 AI Source Apportionment
