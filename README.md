@@ -2,7 +2,7 @@
 
 > An intelligent, hybrid AI-driven environmental command center that shifts urban pollution management from reactive monitoring to proactive mitigation through hyper-local forecasting and targeted enforcement.
 
-### 🚀 [CLICK HERE TO VIEW LIVE DEPLOYMENT](https://your-vercel-deploy-link-here.vercel.app) 🚀
+###  [Vayu Vision Experience Center](https://your-vercel-deploy-link-here.vercel.app) 
 
 ---
 
