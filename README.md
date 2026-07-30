@@ -113,19 +113,19 @@ Instead of hardcoded rules, our AI Agents utilize **Probabilistic Reasoning**. B
 
 ---
 ## 🎯 AI Source Apportionment
-<img width="1445" height="937" alt="Screenshot 2026-07-06 203128" src="https://github.com/CHERRY365206/VayuVision/blob/main/Screenshot%202026-07-30%20214703.png" />
+<img width="1445" height="937" alt="Screenshot 2026-07-06 203128" src="https://github.com/CHERRY365206/VayuVision/blob/main/AI%20Source%20Apportionment.png" />
 
 ---
 ## 🚨 Enforcement Intelligence
-<img width="1445" height="937" alt="Screenshot 2026-07-06 203128" src="https://github.com/CHERRY365206/VayuVision/blob/main/Screenshot%202026-07-30%20214703.png" />
+<img width="1445" height="937" alt="Screenshot 2026-07-06 203128" src="https://github.com/CHERRY365206/VayuVision/blob/main/Enforcement%20Intelligence.png" />
 
 ---
 ## ⏱️ Predictive AQI Forecasting
-<img width="1445" height="937" alt="Screenshot 2026-07-06 203128" src="https://github.com/CHERRY365206/VayuVision/blob/main/Screenshot%202026-07-30%20214703.png" />
+<img width="1445" height="937" alt="Screenshot 2026-07-06 203128" src="https://github.com/CHERRY365206/VayuVision/blob/main/Predictive%20AQI.png" />
 
 ---
 ## 📢 Citizen Health Advisory (Multi-Lingual)
-<img width="1445" height="937" alt="Screenshot 2026-07-06 203128" src="https://github.com/CHERRY365206/VayuVision/blob/main/Screenshot%202026-07-30%20214703.png" />
+<img width="1445" height="937" alt="Screenshot 2026-07-06 203128" src="https://github.com/CHERRY365206/VayuVision/blob/main/Citizen%20Advisory.png" />
 
 
 ---
