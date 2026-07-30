@@ -113,19 +113,19 @@ Instead of hardcoded rules, our AI Agents utilize **Probabilistic Reasoning**. B
 
 ---
 ## 🎯 AI Source Apportionment
-*[ Insert Screenshot Here ]*
+<img width="1445" height="937" alt="Screenshot 2026-07-06 203128" src="https://github.com/CHERRY365206/VayuVision/blob/main/Screenshot%202026-07-30%20214703.png" />
 
 ---
 ## 🚨 Enforcement Intelligence
-*[ Insert Screenshot Here ]*
+<img width="1445" height="937" alt="Screenshot 2026-07-06 203128" src="https://github.com/CHERRY365206/VayuVision/blob/main/Screenshot%202026-07-30%20214703.png" />
 
 ---
 ## ⏱️ Predictive AQI Forecasting
-*[ Insert Screenshot Here ]*
+<img width="1445" height="937" alt="Screenshot 2026-07-06 203128" src="https://github.com/CHERRY365206/VayuVision/blob/main/Screenshot%202026-07-30%20214703.png" />
 
 ---
 ## 📢 Citizen Health Advisory (Multi-Lingual)
-*[ Insert Screenshot Here ]*
+<img width="1445" height="937" alt="Screenshot 2026-07-06 203128" src="https://github.com/CHERRY365206/VayuVision/blob/main/Screenshot%202026-07-30%20214703.png" />
 
 
 ---
